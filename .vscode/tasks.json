@@ -1,0 +1,34 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMake: Build",
+            "type": "shell",
+            "command": "cube-cmake --build ${workspaceFolder}/build/Debug",
+            "group": { "kind": "build", "isDefault": true },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "CMake: Flash",
+            "type": "shell",
+            "command": "& 'C:\\Program Files\\STMicroelectronics\\STM32Cube\\STM32CubeProgrammer\\bin\\STM32_Programmer_CLI.exe' -c port=SWD mode=UR reset=HWrst -w ${workspaceFolder}/build/Debug/Aura.elf -rst",
+            "dependsOn": "CMake: Build",
+            "group": "none",
+            "problemMatcher": []
+        },
+        {
+            "label": "Aura: Compiler + Televerser (script, debug)",
+            "type": "shell",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/compiler_televerser.ps1 -Mode debug",
+            "group": "none",
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Aura: Compiler + Televerser (script, release)",
+            "type": "shell",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/compiler_televerser.ps1 -Mode release",
+            "group": "none",
+            "problemMatcher": "$gcc"
+        }
+    ]
+}

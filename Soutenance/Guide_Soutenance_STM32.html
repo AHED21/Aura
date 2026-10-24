@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide de soutenance STM32</title>
+<style>
+:root{--navy:#0B1F3A;--navy2:#1B3A5C;--teal:#0B8A96;--teal2:#5CCAD3;--bg:#F3F6F9;--line:#DDE4EB;--txt:#1A2433;--mut:#5B6B7D;--warn:#B86A1E;--warnbg:#FCF1E3;--ok:#2E9E5B}
+*{box-sizing:border-box}
+html{font-size:15px}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:"Segoe UI",Calibri,Arial,sans-serif;line-height:1.55}
+.ar,[lang="ar"]{direction:rtl;text-align:right;font-family:"Segoe UI","Tahoma","Arial",sans-serif;font-size:1.06rem;line-height:1.95}
+.fr{direction:ltr}
+header.top{background:var(--navy);color:#fff;padding:14px 22px;position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+header.top b{font-size:1.05rem}
+header.top nav a{color:var(--teal2);text-decoration:none;margin-right:12px;font-weight:600;font-size:.92rem}
+header.top .tg button{background:var(--navy2);color:#fff;border:1px solid var(--teal2);border-radius:14px;padding:4px 12px;margin-left:6px;cursor:pointer;font-size:.85rem}
+header.top .tg button.on{background:var(--teal);border-color:var(--teal)}
+body.hide-ar .ar, body.hide-ar [lang="ar"]{display:none}
+body.hide-fr .fr{display:none}
+main{max-width:1040px;margin:0 auto;padding:18px 18px 60px}
+.cover{background:var(--navy);color:#fff;border-radius:10px;padding:56px 44px;margin:10px 0 26px}
+.cover h1{font-size:2.3rem;margin:.2em 0 .3em;line-height:1.15}
+.cover .k{color:var(--teal2);letter-spacing:.12em;font-weight:700;font-size:.85rem}
+.cover p{color:#D5DEE7;font-size:1.05rem}
+.cover .ar{color:#fff}
+h2{font-size:1.65rem;color:var(--navy);border-bottom:3px solid var(--teal);padding-bottom:6px;margin-top:42px}
+h3{font-size:1.25rem;color:var(--navy2);margin-top:30px}
+h4{font-size:1.05rem;color:var(--teal);margin:20px 0 6px}
+.part{font-size:.8rem;letter-spacing:.14em;color:var(--teal);font-weight:700;margin-top:40px}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 18px;margin:12px 0}
+.slide{background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 20px 16px;margin:22px 0}
+.slide>h3{margin-top:14px}
+.tag{display:inline-block;background:var(--teal);color:#fff;border-radius:10px;padding:1px 10px;font-size:.78rem;font-weight:700;margin-right:6px;vertical-align:middle}
+.script{background:#EAF6F7;border-left:0;border:1px solid #BFE3E6;border-radius:8px;padding:12px 16px;margin:10px 0}
+.script .lab{font-weight:700;color:var(--teal);font-size:.85rem;letter-spacing:.06em}
+.warn{background:var(--warnbg);border:1px solid #F0D2AE;border-radius:8px;padding:10px 14px;margin:12px 0}
+.warn b{color:var(--warn)}
+.ok{background:#E7F5EC;border:1px solid #BFE3CC;border-radius:8px;padding:10px 14px;margin:12px 0}
+table{border-collapse:collapse;width:100%;margin:10px 0;background:#fff;font-size:.93rem}
+th,td{border:1px solid var(--line);padding:6px 9px;vertical-align:top;text-align:left}
+th{background:var(--navy);color:#fff;font-weight:600}
+tr:nth-child(even) td{background:#F7F9FB}
+td.ar,th.ar{text-align:right}
+code{font-family:Consolas,"Courier New",monospace;background:#EEF2F6;padding:0 4px;border-radius:3px;font-size:.92em}
+pre{background:#0F1C2E;color:#E6EDF3;padding:12px 14px;border-radius:8px;overflow-x:auto;font-size:.88rem;direction:ltr;text-align:left}
+.qa{border:1px solid var(--line);border-radius:8px;margin:12px 0;background:#fff;overflow:hidden}
+.qa .qh{background:#EEF2F6;padding:8px 14px;font-weight:700;color:var(--navy)}
+.qa .qb{padding:6px 14px 10px}
+.qa .src{font-size:.85rem;color:var(--mut)}
+.toc a{color:var(--navy2);text-decoration:none}
+.toc a:hover{text-decoration:underline}
+.toc ol{padding-left:22px}
+.toc li{margin:3px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.small{font-size:.86rem;color:var(--mut)}
+.member{border-top:6px solid var(--teal);margin-top:40px}
+.sim p{margin:6px 0}
+.sim .t{color:var(--navy);font-weight:700}
+.sim .r{margin-left:18px}
+svg text{font-family:"Segoe UI",Arial,sans-serif}
+@page{size:A4;margin:15mm 13mm 17mm 13mm;@bottom-center{content:counter(page) " / " counter(pages);font-size:9pt;color:#5B6B7D}}
+@media print{
+  html{font-size:11.5px}
+  body{background:#fff}
+  header.top{display:none}
+  main{max-width:none;padding:0}
+  .cover{border-radius:0;margin:0;min-height:255mm;padding:70mm 18mm 20mm;page-break-after:always;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  h2{page-break-before:always;margin-top:0}
+  h2.nobreak{page-break-before:avoid}
+  .slide,.qa,.card,table,.script{page-break-inside:avoid}
+  .slide{page-break-inside:auto}
+  th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .script,.warn,.ok,pre,.tag{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <b>Guide de soutenance — Station AURA (STM32)</b>
+  <nav>
+    <a href="#sommaire">Sommaire</a><a href="#partie1">Projet</a><a href="#m1">Membre 1</a><a href="#m2">Membre 2</a><a href="#m3">Membre 3</a><a href="#m4">Membre 4</a><a href="#difficile">Questions difficiles</a><a href="#commun">Fiche commune</a><a href="#simulation">Simulation</a>
+  </nav>
+  <span class="tg">Affichage :
+    <button id="b-both" class="on" onclick="vue('both')">FR + AR</button><button id="b-fr" onclick="vue('fr')">Français</button><button id="b-ar" onclick="vue('ar')">العربية</button>
+  </span>
+</header>
+<main>
+
+<section class="cover">
+  <div class="k">CESI · BLOC SYSTÈMES EMBARQUÉS · PROJET WORLDWIDE WEATHER WATCHER</div>
+  <h1>Guide de compréhension et de préparation à la soutenance</h1>
+  <p>Station météorologique embarquée sur STM32 — prototype « AURA » sur carte NUCLEO-L476RG</p>
+  <p class="ar" lang="ar">دليل الفهم والتحضير للمناقشة — محطة أرصاد جوية مدمجة على متحكم STM32</p>
+  <p style="margin-top:34px">Membre 1 · diapositives 1, 2, 7, 8<br>Membre 2 · diapositives 3, 9, 10, 11<br>Membre 3 · diapositives 4, 5, 6, 16<br>Membre 4 · diapositives 12, 13, 14, 15</p>
+  <p class="small" style="color:#8FA3B8">Basé sur : Station_Meteorologique_STM32_Version_3_corrigee.pptx (16 diapositives + 1 annexe masquée), code source du projet Aura (main.c, station.c, pilotes, FatFS), Aura.ioc, scripts de compilation, document « Modes de fonctionnement », cheat sheet du projet, sujet WWW.</p>
+</section>
+
+<h2 id="sommaire" class="nobreak">Sommaire</h2>
+<div class="toc card">
+<ol>
+  <li><a href="#sources">Sources utilisées et limites de l'analyse</a></li>
+  <li><a href="#partie1">Partie 1 — Compréhension globale du projet</a>
+    <ol>
+      <li><a href="#p1-presentation">Présentation générale</a></li>
+      <li><a href="#p1-fonctionnement">Fonctionnement détaillé, étape par étape</a></li>
+      <li><a href="#p1-donnees">Cheminement des données</a></li>
+      <li><a href="#p1-architecture">Architecture et connexions</a></li>
+      <li><a href="#p1-choix">Compréhension des choix techniques</a></li>
+      <li><a href="#p1-glossaire">Glossaire technique français – arabe</a></li>
+    </ol></li>
+  <li><a href="#partie2">Partie 2 — Préparation individuelle</a>
+    <ol>
+      <li><a href="#m1">Membre 1 — diapositives 1, 2, 7, 8</a></li>
+      <li><a href="#m2">Membre 2 — diapositives 3, 9, 10, 11</a></li>
+      <li><a href="#m3">Membre 3 — diapositives 4, 5, 6, 16</a></li>
+      <li><a href="#m4">Membre 4 — diapositives 12, 13, 14, 15</a></li>
+    </ol></li>
+  <li><a href="#partie3">Partie 3 — Questions probables des enseignants (par membre)</a></li>
+  <li><a href="#difficile">Partie 4 — Répondre quand on ne connaît pas exactement la réponse</a></li>
+  <li><a href="#commun">Partie 5 — Fiche commune de révision</a></li>
+  <li><a href="#simulation">Partie 6 — Simulation de soutenance</a></li>
+</ol>
+</div>
+
+<h2 id="sources">Sources utilisées et limites de l'analyse</h2>
+<div class="card fr">
+<p>Ce guide s'appuie uniquement sur les fichiers présents dans le dossier du projet <b>Aura</b> et dans le dossier CESI :</p>
+<ul>
+<li><b>Présentation</b> : <code>Station_Meteorologique_STM32_Version_3_corrigee.pptx</code> (16 diapositives visibles, plus une annexe masquée).</li>
+<li><b>Code source</b> : <code>Core/Src/main.c</code> (démarrage, diagnostic), <code>Core/Src/station.c</code> (modes, acquisition, carte SD, erreurs, configuration), pilotes <code>dht11.c</code>, <code>bh1750.c</code>, <code>rgb_led.c</code>, <code>FATFS/Target/user_diskio.c</code> (carte SD en SPI), <code>stm32l4xx_hal_msp.c</code>.</li>
+<li><b>Configuration</b> : <code>Aura.ioc</code> (STM32CubeMX), <code>CMakePresets.json</code>.</li>
+<li><b>Scripts</b> : <code>scripts/compiler_televerser.sh</code> et <code>scripts/compiler_televerser_court.sh</code>.</li>
+<li><b>Documents</b> : « A2 – Projet Système embarqué – Modes de fonctionnement » (PDF), « Projet Système Embarqué – CheatSheet » (PDF), sujet « BLOC Systèmes Embarqués – Projet WWW ».</li>
+</ul>
+</div>
+<div class="warn fr">
+<p><b>Limites à connaître</b></p>
+<ul>
+<li><b>Tests :</b> aucun rapport de test chiffré n'existe dans le projet (durée de fonctionnement, nombre de lignes enregistrées, résultats du diagnostic). Ce qui est confirmé : la compilation réussie (23/10/2026), l'existence d'un diagnostic intégré dans le code, et un fichier réel enregistré sur la carte SD le 21/10/2026 (captures de la diapositive 8). Vos propres résultats d'essais restent à ajouter par l'équipe.</li>
+<li><b>« 80 Hz » :</b> cette valeur n'existe nulle part dans le projet. La valeur réelle est <b>80 MHz</b> : c'est la fréquence d'horloge du processeur. Voir la section <a href="#c-80">« 80 MHz et non 80 Hz »</a>.</li>
+<li><b>« Deux bus I²C » :</b> le projet n'en utilise <b>qu'un seul</b>, I2C1 (PB8/PB9). Voir la section <a href="#c-i2c">I²C</a>.</li>
+<li><b>Écran LCD :</b> le code contient un pilote d'écran LCD optionnel (<code>lcd_i2c.c</code>), mais cet écran ne fait pas partie du matériel de référence (cheat sheet) ni de la présentation. Si un enseignant le voit dans le code, dites simplement qu'il s'agit d'un affichage optionnel non présenté.</li>
+<li><b>SPI2 :</b> CubeMX initialise aussi un bus SPI2 (PC2, PB10, PB15), mais il n'est utilisé par aucune partie de l'application. La carte SD utilise <b>SPI1</b>.</li>
+<li><b>Diapositive 12 :</b> l'étiquette affiche <code>compiler_televerser.sh</code>, mais les 5 lignes affichées sont le contenu exact de <code>compiler_televerser_court.sh</code> (le script complet est plus long). Voir la section Membre 4.</li>
+<li><b>Diapositive 2 :</b> les noms « Membre 1… Membre 4 » écrits sur le sommaire correspondent à l'ancienne répartition. Avec la nouvelle répartition, il vaut mieux ne pas les lire, ou les corriger dans PowerPoint.</li>
+<li><b>FILE_MAX_SIZE :</b> le code (<code>station.c</code>) a été mis à jour à 2 048 octets (2 Ko) par défaut, comme la présentation. Il faut <b>re-téléverser</b> le programme sur la carte avant la démonstration pour que la commande <code>PARAMS</code> affiche bien 2048.</li>
+</ul>
+</div>
+<div class="warn ar" lang="ar">
+<p><b>حدود يجب معرفتها</b></p>
+<ul>
+<li><b>الاختبارات:</b> لا يوجد في المشروع تقرير اختبارات بالأرقام (مدة التشغيل، عدد الأسطر المسجّلة، نتائج التشخيص). المؤكَّد فقط: نجاح الترجمة (Compilation) بتاريخ 23/10/2026، ووجود تشخيص مدمج في الكود، وملف حقيقي مسجَّل على بطاقة SD بتاريخ 21/10/2026 (صور الشريحة 8).</li>
+<li><b>«80 هرتز»:</b> هذه القيمة غير موجودة في المشروع. القيمة الصحيحة هي <b>80 ميغاهرتز (80 MHz)</b> وهي تردد ساعة المعالج.</li>
+<li><b>«ناقلا I²C اثنان»:</b> المشروع يستعمل <b>ناقل I²C واحدًا فقط</b> هو I2C1 على المنفذين PB8 وPB9.</li>
+<li><b>شاشة LCD:</b> يحتوي الكود على برنامج تشغيل لشاشة اختيارية، لكنها ليست ضمن العتاد المرجعي ولا في العرض. إن سُئلتم عنها قولوا إنها عرض اختياري لم نقدّمه.</li>
+<li><b>SPI2:</b> مُهيّأ من CubeMX لكنه غير مستعمل. بطاقة SD تستعمل <b>SPI1</b>.</li>
+<li><b>الشريحة 12:</b> العنوان يذكر <code>compiler_televerser.sh</code> لكن الأسطر الخمسة المعروضة هي محتوى الملف القصير <code>compiler_televerser_court.sh</code>.</li>
+<li><b>الشريحة 2:</b> أسماء «Membre 1…4» على الفهرس تخص التوزيع القديم؛ الأفضل عدم قراءتها أو تصحيحها في PowerPoint.</li>
+<li><b>FILE_MAX_SIZE:</b> تم تعديل الكود إلى 2048 بايت. يجب <b>إعادة رفع البرنامج إلى البطاقة</b> قبل العرض العملي.</li>
+</ul>
+</div>
+
+<div class="part">PARTIE 1</div>
+<h2 id="partie1" class="nobreak">Compréhension globale du projet</h2>
+
+<h3 id="p1-presentation">1.1 Présentation générale</h3>
+<h4>Explication simple</h4>
+<div class="grid2">
+<div class="card fr">
+<p><b>Le problème.</b> L'AIVM (Agence Internationale pour la Vigilance Météorologique) veut équiper des navires de stations météo, pour mesurer les paramètres liés à la formation des cyclones. Les compagnies maritimes acceptent, à condition que la station soit <b>simple</b> et <b>pilotable par un membre d'équipage</b>.</p>
+<p><b>Notre réponse.</b> AURA est un prototype : une carte STM32 qui mesure régulièrement la <b>température de l'air</b>, l'<b>humidité</b>, la <b>luminosité</b> et la <b>position GPS</b>, ajoute la <b>date et l'heure</b>, et écrit le tout sur une <b>carte SD</b>, une ligne par mesure. L'équipage pilote la station avec <b>deux boutons</b>, lit son état sur une <b>LED de couleur</b>, et peut la régler depuis un <b>ordinateur</b> (console série).</p>
+<p>Image simple : le STM32 est le <b>chef d'orchestre</b>. Les capteurs sont les <b>yeux</b>, la carte SD est la <b>mémoire</b>, la LED est la <b>voix</b> de la station, les boutons sont ses <b>commandes</b>.</p>
+</div>
+<div class="card ar" lang="ar">
+<p><b>المشكلة.</b> تريد الوكالة الدولية لليقظة الجوية (AIVM) تجهيز السفن بمحطات أرصاد جوية لقياس العوامل المرتبطة بتكوّن الأعاصير. شركات الملاحة توافق بشرط أن تكون المحطة <b>بسيطة</b> ويمكن لأحد أفراد الطاقم <b>تشغيلها</b>.</p>
+<p><b>حلّنا.</b> AURA نموذج أولي: بطاقة STM32 تقيس بانتظام <b>درجة حرارة الهواء</b> و<b>الرطوبة</b> و<b>شدة الإضاءة</b> و<b>الموقع عبر GPS</b>، وتضيف <b>التاريخ والوقت</b>، ثم تكتب كل ذلك على <b>بطاقة SD</b> بسطر واحد لكل قياس. يتحكم الطاقم في المحطة بـ<b>زرّين</b>، ويعرف حالتها من <b>ضوء LED ملوّن</b>، ويمكنه ضبطها من <b>حاسوب</b> عبر وحدة التحكم التسلسلية.</p>
+<p>تشبيه بسيط: STM32 هو <b>قائد الأوركسترا</b>، الحساسات هي <b>العيون</b>، بطاقة SD هي <b>الذاكرة</b>، الـLED هي <b>صوت</b> المحطة، والأزرار هي <b>أوامرها</b>.</p>
+</div>
+</div>
+
+<h4>Fonctionnalités principales (confirmées dans le code)</h4>
+<table class="fr">
+<tr><th>Fonctionnalité</th><th>Ce qu'elle fait</th><th>Où dans le code</th></tr>
+<tr><td>Acquisition périodique</td><td>Une mesure toutes les <code>LOG_INTERVAL</code> (10 min par défaut, réglable)</td><td><code>Station_Loop()</code>, <code>acquerir()</code></td></tr>
+<tr><td>Horodatage</td><td>Date et heure lues dans la RTC, recalée sur l'heure GPS</td><td><code>acquerir()</code>, <code>rtc_depuis_gps()</code></td></tr>
+<tr><td>Enregistrement SD</td><td>Une ligne CSV (séparateur « ; ») ajoutée au fichier du jour <code>AAMMJJ_0.LOG</code></td><td><code>enregistrer()</code>, <code>archiver()</code></td></tr>
+<tr><td>4 modes</td><td>Standard, configuration, maintenance, économique</td><td><code>changer_mode()</code>, <code>gerer_evenements()</code></td></tr>
+<tr><td>Signalisation LED</td><td>Couleur fixe par mode, clignotement rouge + 2e couleur par erreur</td><td><code>led_tick()</code> (appelée chaque ms)</td></tr>
+<tr><td>Configuration série</td><td>Commandes comme <code>LOG_INTERVAL=10</code>, sauvegardées en Flash</td><td><code>config_commande()</code>, <code>param_sauver()</code></td></tr>
+<tr><td>Gestion des erreurs</td><td>6 erreurs détectées, affichées par priorité, reprise automatique</td><td><code>erreur_set()</code>, compteurs de timeout</td></tr>
+<tr><td>Diagnostic matériel</td><td>Bouton B1 maintenu au reset : test de chaque composant</td><td><code>Test_Materiel()</code> dans <code>main.c</code></td></tr>
+</table>
+
+<h4>Le rôle du STM32</h4>
+<div class="grid2">
+<div class="card fr"><p>Le <b>STM32L476RG</b> (cœur ARM Cortex-M4, 1 Mo de Flash, 128 Ko de RAM, cadencé à 80 MHz) est le seul « cerveau » du système. Il <b>interroge</b> les capteurs, <b>reçoit</b> les trames du GPS, <b>calcule</b> les valeurs, <b>gère le temps</b> grâce à sa RTC interne, <b>écrit</b> sur la carte SD, <b>pilote</b> la LED, <b>surveille</b> les boutons et <b>dialogue</b> avec le PC. Il garde aussi les paramètres dans sa mémoire Flash, car il n'a pas d'EEPROM.</p></div>
+<div class="card ar" lang="ar"><p>المتحكم <b>STM32L476RG</b> (نواة ARM Cortex-M4، ذاكرة Flash بسعة 1 ميغابايت، RAM بسعة 128 كيلوبايت، تردد 80 ميغاهرتز) هو «الدماغ» الوحيد للنظام. فهو <b>يستجوب</b> الحساسات، و<b>يستقبل</b> رسائل GPS، و<b>يحسب</b> القيم، و<b>يدير الوقت</b> بساعة RTC الداخلية، و<b>يكتب</b> على بطاقة SD، و<b>يتحكم</b> في الـLED، و<b>يراقب</b> الأزرار، و<b>يتواصل</b> مع الحاسوب. كما يحفظ الإعدادات في ذاكرة Flash لأنه لا يملك ذاكرة EEPROM.</p></div>
+</div>
+
+<h4>Fonctionnement global (approfondi)</h4>
+<div class="grid2">
+<div class="card fr"><p>Le programme est une <b>boucle infinie</b> (<code>Station_Loop()</code>). À chaque tour, elle traite les appuis longs sur les boutons, puis exécute le travail du <b>mode courant</b>. En mode standard, quand l'heure de la prochaine mesure est atteinte (comparaison avec <code>HAL_GetTick()</code>, compteur en millisecondes), la station fait une <b>acquisition complète</b> : RTC → DHT11 → BH1750 → GPS. Elle construit une ligne de 7 champs, l'affiche sur la console et l'écrit sur la carte SD. En parallèle, des <b>interruptions</b> reçoivent les octets du GPS et de la console, détectent les fronts des boutons, et le <b>SysTick</b> (toutes les 1 ms) anime la LED et mesure la durée des appuis.</p></div>
+<div class="card ar" lang="ar"><p>البرنامج عبارة عن <b>حلقة لا نهائية</b> (<code>Station_Loop()</code>). في كل دورة تعالج الضغطات الطويلة على الأزرار ثم تنفّذ عمل <b>الوضع الحالي</b>. في الوضع العادي، عندما يحين وقت القياس التالي (بالمقارنة مع العدّاد <code>HAL_GetTick()</code> بالميلي ثانية)، تقوم المحطة بـ<b>قياس كامل</b>: الساعة RTC ثم DHT11 ثم BH1750 ثم GPS. تبني سطرًا من 7 حقول وتعرضه على وحدة التحكم وتكتبه على بطاقة SD. وبالتوازي، تستقبل <b>المقاطعات</b> بايتات GPS ووحدة التحكم وتكتشف ضغطات الأزرار، ويقوم <b>SysTick</b> (كل 1 ميلي ثانية) بتحريك الـLED وقياس مدة الضغط.</p></div>
+</div>
+
+<h3 id="p1-fonctionnement">1.2 Fonctionnement détaillé, étape par étape</h3>
+<table>
+<tr><th style="width:23%">Étape</th><th class="fr">Ce qui se passe réellement (français)</th><th class="ar" lang="ar">ما يحدث فعلًا (بالعربية)</th></tr>
+<tr><td><b>1. Démarrage</b></td><td class="fr"><code>HAL_Init()</code>, horloge à 80 MHz (oscillateur interne HSI 16 MHz × PLL), puis initialisation des périphériques générés par CubeMX : GPIO, RTC, I2C1, SPI1, SPI2, USART3, FatFS. L'USART2 (console) est initialisé à la main (<code>USART2_Init_Manuel</code>).</td><td class="ar" lang="ar">تهيئة HAL وضبط الساعة على 80 ميغاهرتز (المذبذب الداخلي HSI بتردد 16 ميغاهرتز مضروبًا عبر PLL)، ثم تهيئة الأطراف: GPIO وRTC وI2C1 وSPI1 وUSART3 ونظام الملفات FatFS. منفذ USART2 الخاص بوحدة التحكم يُهيّأ يدويًا.</td></tr>
+<tr><td><b>2. Choix au reset</b></td><td class="fr">Si le bouton bleu <b>B1</b> (PC13) est maintenu : <b>diagnostic matériel</b> (LED, boutons, DHT11, BH1750, RTC, SD, GPS) et bilan OK / ÉCHEC / « à vérifier à l'œil ». Sinon : <code>Station_Init()</code>.</td><td class="ar" lang="ar">إذا كان الزر الأزرق <b>B1</b> مضغوطًا عند التشغيل: <b>تشخيص العتاد</b> واختبار كل مكوّن مع حصيلة (ناجح / فاشل / يُتحقق بالعين). وإلا تُنفَّذ <code>Station_Init()</code>.</td></tr>
+<tr><td><b>3. Station_Init()</b></td><td class="fr">Rend la broche PA5 au SPI1, initialise la LED et le DHT11, <b>charge les paramètres</b> depuis la Flash (sinon valeurs par défaut), configure les boutons en interruption (deux fronts), lance la réception série par interruption (USART2 et USART3). Mode initial : <b>CONFIGURATION</b> si le bouton rouge (PC3) est maintenu, sinon <b>STANDARD</b>.</td><td class="ar" lang="ar">تعيد المنفذ PA5 إلى SPI1، تهيّئ الـLED وDHT11، <b>تحمّل الإعدادات</b> من Flash (أو القيم الافتراضية)، تضبط الأزرار على المقاطعات، وتبدأ الاستقبال التسلسلي بالمقاطعات. الوضع الأولي: <b>الإعداد</b> إذا كان الزر الأحمر مضغوطًا، وإلا <b>العادي</b>.</td></tr>
+<tr><td><b>4. Acquisition</b></td><td class="fr">(a) RTC : date + heure ; (b) DHT11 : jusqu'à réussite, nouvel essai toutes les 2 s, abandon au <code>TIMEOUT</code> (30 s) ; (c) BH1750 : nouvel essai toutes les 0,5 s jusqu'au TIMEOUT ; (d) GPS : attente d'une trame RMC <b>reçue après le début de l'acquisition</b>, au plus TIMEOUT. À chaque étape, un appui long peut <b>interrompre</b> proprement l'acquisition.</td><td class="ar" lang="ar">(أ) الساعة: التاريخ والوقت؛ (ب) DHT11: محاولة جديدة كل ثانيتين حتى انتهاء المهلة TIMEOUT (30 ثانية)؛ (ج) BH1750: محاولة كل نصف ثانية حتى المهلة؛ (د) GPS: انتظار رسالة RMC تصل بعد بداية القياس، بحد أقصى TIMEOUT. يمكن لضغطة طويلة أن <b>تقطع</b> القياس بشكل نظيف.</td></tr>
+<tr><td><b>5. Traitement</b></td><td class="fr">Température hors [MIN_TEMP_AIR ; MAX_TEMP_AIR] → <b>NA</b> + erreur « donnée incohérente ». Humidité gardée seulement si la température est entre HYGR_MINT et HYGR_MAXT. Lux = valeur brute ÷ 1,2. Position convertie en <b>degrés décimaux</b> (calcul en entiers). Valeur absente → <b>NA</b>.</td><td class="ar" lang="ar">حرارة خارج الحدود ← <b>NA</b> مع خطأ «بيانات غير متناسقة». الرطوبة تُحفظ فقط إذا كانت الحرارة بين HYGR_MINT وHYGR_MAXT. اللوكس = القيمة الخام ÷ 1.2. الموقع يُحوَّل إلى <b>درجات عشرية</b>. القيمة الغائبة ← <b>NA</b>.</td></tr>
+<tr><td><b>6. Temps</b></td><td class="fr">La RTC fonctionne sur l'oscillateur interne <b>LSI</b>, donc elle dérive. Au premier fix GPS valide, puis dès que l'écart dépasse 2 s, la RTC est <b>recalée</b> sur l'heure GPS (UTC + 1 h, décalage fixe). Si l'horloge n'a jamais été réglée (ni GPS, ni <code>CLOCK</code>/<code>DATE</code>), date et heure valent NA.</td><td class="ar" lang="ar">تعمل الساعة RTC على المذبذب الداخلي <b>LSI</b> لذلك تنحرف. عند أول إشارة GPS صالحة، ثم كلما تجاوز الفرق ثانيتين، تُعاد <b>مزامنتها</b> مع وقت GPS (التوقيت العالمي +1 ساعة). إذا لم تُضبط الساعة أبدًا فالتاريخ والوقت = NA.</td></tr>
+<tr><td><b>7. Carte SD</b></td><td class="fr">Monter la carte (FatFS/SPI1) → vérifier la place → ouvrir <code>AAMMJJ_0.LOG</code> → archiver en <code>_1</code>…<code>_9</code> si le fichier dépasse <code>FILE_MAX_SIZE</code> → écrire l'en-tête si fichier vide → ajouter la ligne → <b>fermer</b> le fichier.</td><td class="ar" lang="ar">تركيب البطاقة ← التحقق من المساحة ← فتح ملف اليوم ← أرشفته في نسخة _1 إلى _9 إذا تجاوز الحجم الأقصى ← كتابة الترويسة إن كان فارغًا ← إضافة السطر ← <b>إغلاق</b> الملف.</td></tr>
+<tr><td><b>8. Erreurs</b></td><td class="fr">Chaque erreur est un bit dans une variable <code>erreurs</code>. La LED affiche la plus prioritaire. Les erreurs sont recalculées à chaque acquisition : la cause disparaît → l'erreur s'efface.</td><td class="ar" lang="ar">كل خطأ هو بِت في متغير <code>erreurs</code>. تعرض الـLED الخطأ الأعلى أولوية. يُعاد حساب الأخطاء عند كل قياس: إذا زال السبب يختفي الخطأ.</td></tr>
+<tr><td><b>9. Boucle continue</b></td><td class="fr"><code>while(1) { Station_Loop(); }</code> : traiter les événements boutons, puis traitement du mode. Pas de mise en veille du processeur (modes Stop/Standby non utilisés).</td><td class="ar" lang="ar">حلقة دائمة: معالجة أحداث الأزرار ثم عمل الوضع الحالي. لا يدخل المعالج في وضع السكون (أوضاع Stop/Standby غير مستعملة).</td></tr>
+</table>
+
+<h3 id="p1-donnees">1.3 Cheminement des données</h3>
+<table>
+<tr><th>Donnée</th><th>Produite par</th><th>Arrive au STM32 par</th><th>Traitement</th><th>Destination</th></tr>
+<tr><td>Date, heure</td><td>RTC interne (recalée par GPS)</td><td>Registre interne</td><td>NA si jamais réglée</td><td>Champs 1–2 de la ligne, nom du fichier</td></tr>
+<tr><td>Température, humidité</td><td>DHT11</td><td>1 fil, PB0, trame de 40 bits</td><td>Checksum, seuils MIN/MAX, HYGR_MINT/MAXT</td><td>Champs 5–6</td></tr>
+<tr><td>Luminosité</td><td>BH1750</td><td>I2C1, adresse 0x23</td><td>Brut ÷ 1,2 = lux ; classe faible/moyenne/forte (console)</td><td>Champ 7</td></tr>
+<tr><td>Latitude, longitude</td><td>Module GPS</td><td>USART3, 9600 bauds, trames NMEA</td><td>Trame RMC, statut A, degrés décimaux</td><td>Champs 3–4 ; recalage RTC</td></tr>
+<tr><td>Commandes</td><td>PC (terminal série)</td><td>USART2 via ST-LINK, 115 200 bauds</td><td>Analyse <code>NOM=valeur</code></td><td>Paramètres en Flash</td></tr>
+<tr><td>Appuis boutons</td><td>Boutons PC3 (rouge), PC13 (vert/B1)</td><td>EXTI (interruption sur fronts)</td><td>Anti-rebond 20 ms, appui long 5 s (SysTick)</td><td>File d'événements → changement de mode</td></tr>
+</table>
+<div class="card fr"><p><b>Exemple réel (diapositive 8)</b> : la ligne <code>21/10/2026;14:04:03;NA;NA;28;49;116</code> signifie : le 21/10/2026 à 14 h 04 min 03 s, pas de position GPS disponible (NA, NA), 28 °C, 49 % d'humidité, 116 lux. Elle se trouve dans le fichier <code>261021_0</code> (année 26, mois 10, jour 21, révision 0).</p></div>
+<div class="card ar" lang="ar"><p><b>مثال حقيقي (الشريحة 8)</b>: السطر <code>21/10/2026;14:04:03;NA;NA;28;49;116</code> يعني: يوم 21/10/2026 الساعة 14:04:03، لا يوجد موقع GPS (NA)، الحرارة 28 درجة، الرطوبة 49٪، الإضاءة 116 لوكس. وهو موجود في الملف <code>261021_0</code> (السنة 26، الشهر 10، اليوم 21، النسخة 0).</p></div>
+
+<h3 id="p1-architecture">1.4 Architecture et connexions</h3>
+<p class="small fr">Toutes les broches ci-dessous sont confirmées à la fois par la cheat sheet, par <code>Aura.ioc</code> et par le code.</p>
+<svg viewBox="0 0 900 400" width="100%" role="img" aria-label="Schéma fonctionnel de la station AURA" style="background:#fff;border:1px solid #DDE4EB;border-radius:8px;margin:8px 0">
+  <defs><marker id="fl" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#5B6B7D"/></marker></defs>
+  <rect x="330" y="70" width="240" height="260" rx="10" fill="#0B1F3A"/>
+  <text x="450" y="110" fill="#fff" font-size="20" font-weight="700" text-anchor="middle">STM32L476RG</text>
+  <text x="450" y="132" fill="#C9D6E3" font-size="12" text-anchor="middle">Cortex-M4 · 80 MHz</text>
+  <rect x="350" y="150" width="200" height="40" rx="6" fill="#1B3A5C"/><text x="450" y="175" fill="#5CCAD3" font-size="13" text-anchor="middle">RTC (LSI) · date et heure</text>
+  <rect x="350" y="200" width="200" height="40" rx="6" fill="#1B3A5C"/><text x="450" y="225" fill="#5CCAD3" font-size="13" text-anchor="middle">Flash · paramètres</text>
+  <rect x="350" y="250" width="200" height="40" rx="6" fill="#1B3A5C"/><text x="450" y="275" fill="#5CCAD3" font-size="13" text-anchor="middle">NVIC · interruptions</text>
+  <g font-size="13">
+  <rect x="20" y="40" width="230" height="56" rx="8" fill="#F3F6F9" stroke="#DDE4EB"/><text x="34" y="64" font-weight="700" fill="#0B1F3A">DHT11</text><text x="34" y="84" fill="#5B6B7D">temp. + humidité · PB0</text>
+  <line x1="250" y1="68" x2="328" y2="110" stroke="#5B6B7D" stroke-width="2" marker-end="url(#fl)"/><text x="262" y="78" fill="#5B6B7D" font-size="11" font-weight="700">1 fil</text>
+  <rect x="20" y="120" width="230" height="56" rx="8" fill="#F3F6F9" stroke="#DDE4EB"/><text x="34" y="144" font-weight="700" fill="#0B1F3A">BH1750</text><text x="34" y="164" fill="#5B6B7D">lux · PB8 SCL / PB9 SDA · 0x23</text>
+  <line x1="250" y1="148" x2="328" y2="160" stroke="#0B8A96" stroke-width="2" marker-end="url(#fl)"/><text x="262" y="142" fill="#0B8A96" font-size="11" font-weight="700">I2C1</text>
+  <rect x="20" y="200" width="230" height="56" rx="8" fill="#F3F6F9" stroke="#DDE4EB"/><text x="34" y="224" font-weight="700" fill="#0B1F3A">Module GPS</text><text x="34" y="244" fill="#5B6B7D">NMEA · PC10 / PC11 · 9600 Bd</text>
+  <line x1="250" y1="228" x2="328" y2="220" stroke="#1B3A5C" stroke-width="2" marker-end="url(#fl)"/><text x="258" y="216" fill="#1B3A5C" font-size="11" font-weight="700">USART3</text>
+  <rect x="20" y="280" width="230" height="56" rx="8" fill="#F3F6F9" stroke="#DDE4EB"/><text x="34" y="304" font-weight="700" fill="#0B1F3A">Boutons rouge / vert</text><text x="34" y="324" fill="#5B6B7D">PC3 (externe) · PC13 (B1)</text>
+  <line x1="250" y1="308" x2="328" y2="290" stroke="#5B6B7D" stroke-width="2" marker-end="url(#fl)"/><text x="262" y="292" fill="#5B6B7D" font-size="11" font-weight="700">EXTI</text>
+  <rect x="650" y="80" width="230" height="56" rx="8" fill="#F3F6F9" stroke="#DDE4EB"/><text x="664" y="104" font-weight="700" fill="#0B1F3A">Carte SD (FatFS)</text><text x="664" y="124" fill="#5B6B7D">PA5 / PA6 / PA7 · CS PB6</text>
+  <line x1="572" y1="120" x2="648" y2="108" stroke="#E08A1E" stroke-width="2" marker-end="url(#fl)"/><text x="590" y="104" fill="#E08A1E" font-size="11" font-weight="700">SPI1</text>
+  <rect x="650" y="170" width="230" height="56" rx="8" fill="#F3F6F9" stroke="#DDE4EB"/><text x="664" y="194" font-weight="700" fill="#0B1F3A">LED RGB</text><text x="664" y="214" fill="#5B6B7D">PA0 R · PA1 V · PA4 B</text>
+  <line x1="572" y1="198" x2="648" y2="198" stroke="#5B6B7D" stroke-width="2" marker-end="url(#fl)"/><text x="592" y="190" fill="#5B6B7D" font-size="11" font-weight="700">GPIO</text>
+  <rect x="650" y="260" width="230" height="56" rx="8" fill="#F3F6F9" stroke="#DDE4EB"/><text x="664" y="284" font-weight="700" fill="#0B1F3A">PC · console série</text><text x="664" y="304" fill="#5B6B7D">ST-LINK · PA2 / PA3 · 115 200 Bd</text>
+  <line x1="572" y1="288" x2="648" y2="288" stroke="#1B3A5C" stroke-width="2" marker-end="url(#fl)" marker-start="url(#fl)"/><text x="586" y="280" fill="#1B3A5C" font-size="11" font-weight="700">USART2</text>
+  </g>
+  <text x="450" y="370" fill="#5B6B7D" font-size="12" text-anchor="middle" font-style="italic">Schéma fonctionnel (pas un schéma de câblage) — connexions confirmées par la cheat sheet, Aura.ioc et le code</text>
+</svg>
+<table>
+<tr><th>Composant</th><th>Rôle</th><th>Interface</th><th>Broches</th><th>Paramètres de communication</th></tr>
+<tr><td>NUCLEO-L476RG</td><td>Carte du microcontrôleur, programmation et console</td><td>USB · ST-LINK (SWD + port série virtuel)</td><td>—</td><td>Horloge 80 MHz</td></tr>
+<tr><td>DHT11</td><td>Température de l'air, humidité</td><td>Protocole 1 fil propriétaire</td><td>PB0 (entrée/sortie alternée)</td><td>Trame 40 bits, durées mesurées en µs (compteur DWT)</td></tr>
+<tr><td>BH1750</td><td>Luminosité</td><td>I²C (bus I2C1)</td><td>PB8 = SCL, PB9 = SDA</td><td>Adresse 0x23, 100 kHz (Timing 0x10D19CE4), mode continu haute résolution</td></tr>
+<tr><td>Module GPS</td><td>Position, heure UTC</td><td>UART (USART3)</td><td>PC10 = TX du STM32, PC11 = RX du STM32</td><td>9600 bauds, trames NMEA, réception par interruption</td></tr>
+<tr><td>Carte SD</td><td>Stockage des mesures (FAT32)</td><td>SPI1 + FatFS</td><td>PA5 SCK, PA6 MISO, PA7 MOSI, PB6 CS</td><td>≈ 312 kHz à l'initialisation (&lt; 400 kHz), puis 10 MHz</td></tr>
+<tr><td>RTC</td><td>Date et heure</td><td>Interne au STM32</td><td>—</td><td>Oscillateur LSI (32 kHz)</td></tr>
+<tr><td>LED RGB</td><td>État et erreurs</td><td>3 sorties GPIO</td><td>PA0 rouge, PA1 vert, PA4 bleu</td><td>Anode commune → logique inversée</td></tr>
+<tr><td>Bouton rouge</td><td>Configuration, maintenance, retour</td><td>GPIO + EXTI3</td><td>PC3 (pull-up interne)</td><td>Fronts montant et descendant, anti-rebond 20 ms</td></tr>
+<tr><td>Bouton vert (B1)</td><td>Mode économique, diagnostic au reset</td><td>GPIO + EXTI15_10</td><td>PC13</td><td>Idem</td></tr>
+<tr><td>Console PC</td><td>Configuration et maintenance</td><td>UART (USART2) via ST-LINK</td><td>PA2 / PA3</td><td>115 200 bauds</td></tr>
+</table>
+
+<h3 id="p1-choix">1.5 Compréhension des choix techniques</h3>
+<p class="small fr">Pour chaque point : définition simple, rôle dans AURA, raison du choix (seulement si documentée ou clairement déductible), avantages et limites, exemple, question possible. La mention <b>[déduit]</b> signale une explication générale, non écrite dans les documents.</p>
+
+<div class="card" id="c-stm32">
+<h4>Pourquoi le STM32 ?</h4>
+<div class="fr"><p><b>Définition :</b> un microcontrôleur est un petit ordinateur sur une seule puce (processeur + mémoire + périphériques). <b>Rôle :</b> il pilote tout le système. <b>Raison documentée :</b> la carte est <b>imposée par le sujet</b> (« Cortex M4 intégré à la carte STM32 Nucleo »). <b>Avantages [déduit] :</b> nombreux périphériques (I2C, SPI, plusieurs UART, RTC), gamme basse consommation (L4), sonde ST-LINK intégrée pour programmer et déboguer. <b>Limite :</b> pas d'EEPROM, d'où la sauvegarde des paramètres en Flash. <b>Exemple :</b> le même STM32 lit le GPS en UART pendant qu'il écrit sur la SD en SPI. <b>Question possible :</b> « Pourquoi ne pas avoir utilisé un Arduino ? » → la carte Nucleo est imposée ; le STM32 offre plus de périphériques et un vrai débogueur.</p></div>
+<div class="ar" lang="ar"><p><b>التعريف:</b> المتحكم الدقيق حاسوب صغير على شريحة واحدة (معالج + ذاكرة + أطراف). <b>دوره:</b> يدير النظام كله. <b>السبب الموثّق:</b> البطاقة <b>مفروضة في نص المشروع</b>. <b>المزايا [استنتاج]:</b> أطراف كثيرة (I2C وSPI وعدة UART وRTC)، عائلة منخفضة الاستهلاك، ومبرمج ST-LINK مدمج. <b>الحد:</b> لا توجد EEPROM لذلك تُحفظ الإعدادات في Flash.</p></div>
+</div>
+
+<div class="card" id="c-uart">
+<h4>UART : pourquoi et avec quels composants ?</h4>
+<div class="fr"><p><b>Définition :</b> liaison série <b>asynchrone</b> sur 2 fils (TX émission, RX réception), sans horloge commune : les deux côtés doivent utiliser la même vitesse, le <b>baud rate</b>. <b>Dans AURA :</b> deux UART. <b>USART3</b> reçoit le <b>GPS</b> à 9600 bauds ; <b>USART2</b> relie le <b>PC</b> à 115 200 bauds via le ST-LINK. <b>Raison :</b> le module GPS envoie ses trames NMEA en UART (cheat sheet) ; la console du ST-LINK est un port série virtuel. <b>Avantage :</b> simple, idéal pour des flux de texte. <b>Limite :</b> point à point (un seul appareil par UART). <b>Exemple :</b> chaque octet du GPS déclenche une interruption qui l'ajoute à la trame en cours. <b>Question :</b> « Pourquoi deux UART ? » → le GPS et la console sont deux appareils différents ; une UART ne relie que deux équipements.</p></div>
+<div class="ar" lang="ar"><p><b>التعريف:</b> UART وصلة تسلسلية <b>غير متزامنة</b> على سلكين (TX للإرسال وRX للاستقبال) بدون ساعة مشتركة، لذلك يجب أن تكون السرعة (baud rate) نفسها في الطرفين. <b>في مشروعنا:</b> منفذان: <b>USART3</b> لاستقبال GPS بسرعة 9600، و<b>USART2</b> للحاسوب بسرعة 115200 عبر ST-LINK. <b>لماذا اثنان؟</b> لأن UART يربط جهازين فقط.</p></div>
+</div>
+
+<div class="card" id="c-i2c">
+<h4>I²C : pourquoi, et y a-t-il deux bus ?</h4>
+<div class="fr"><p><b>Définition :</b> bus série <b>synchrone</b> à 2 fils : <b>SCL</b> (horloge, fournie par le maître) et <b>SDA</b> (données). Chaque esclave a une <b>adresse</b> ; plusieurs capteurs peuvent partager les mêmes 2 fils. Des résistances de pull-up sont nécessaires. <b>Dans AURA :</b> <b>un seul bus</b>, <b>I2C1</b>, sur PB8 (SCL) et PB9 (SDA), à 100 kHz, pour le <b>BH1750</b> (adresse 0x23). <b>Raison :</b> le BH1750 est un capteur I²C (cheat sheet). <b>Avantage :</b> 2 fils seulement, extensible à d'autres capteurs. <b>Limite :</b> plus lent que SPI. <b>Question :</b> « Pourquoi deux bus I²C ? » → <b>il n'y en a qu'un</b> : I2C1. (Le second bus série configuré par CubeMX est SPI2, inutilisé.)</p>
+<p><b>UART ou I²C ?</b></p></div>
+<table class="fr">
+<tr><th></th><th>UART</th><th>I²C</th></tr>
+<tr><td>Horloge</td><td>Aucune (asynchrone, baud rate convenu)</td><td>Oui, SCL fournie par le maître (synchrone)</td></tr>
+<tr><td>Fils</td><td>TX, RX (+ masse)</td><td>SCL, SDA (+ masse), pull-up</td></tr>
+<tr><td>Nombre d'appareils</td><td>2 (point à point)</td><td>Plusieurs, repérés par adresse</td></tr>
+<tr><td>Qui parle ?</td><td>Chacun peut émettre quand il veut</td><td>Le maître (STM32) interroge l'esclave</td></tr>
+<tr><td>Dans AURA</td><td>GPS (USART3), PC (USART2)</td><td>BH1750 (I2C1, 0x23)</td></tr>
+</table>
+<div class="ar" lang="ar"><p><b>I²C</b> ناقل تسلسلي <b>متزامن</b> بسلكين: <b>SCL</b> للساعة و<b>SDA</b> للبيانات. لكل جهاز <b>عنوان</b>، ويمكن لعدة حساسات مشاركة السلكين. <b>في مشروعنا ناقل واحد فقط</b> هو I2C1 (PB8 وPB9) بسرعة 100 كيلوهرتز للحساس BH1750 بالعنوان 0x23. الفرق مع UART: في UART لا توجد ساعة ويربط جهازين فقط ويستطيع كل طرف الإرسال متى شاء؛ في I²C توجد ساعة يرسلها المتحكم (السيّد) ويمكن ربط عدة أجهزة بالعناوين.</p></div>
+</div>
+
+<div class="card" id="c-80">
+<h4>80 MHz et non 80 Hz</h4>
+<div class="fr"><p>La valeur « 80 Hz » <b>n'existe pas</b> dans le projet. La valeur réelle est <b>80 MHz</b> (80 millions de cycles par seconde) : c'est la <b>fréquence d'horloge du processeur</b> (<code>RCC.SYSCLKFreq_VALUE=80000000</code> dans Aura.ioc), obtenue à partir de l'oscillateur interne HSI de 16 MHz multiplié par la PLL (×10 ÷ 2). C'est la fréquence maximale du STM32L476 et la valeur indiquée par la cheat sheet. Elle fixe la vitesse d'exécution des instructions ; le compteur DWT du DHT11 compte aussi à cette fréquence (80 cycles = 1 µs).</p>
+<p><b>Ne pas confondre les fréquences et intervalles du projet :</b></p></div>
+<table class="fr">
+<tr><th>Valeur</th><th>Ce que c'est</th></tr>
+<tr><td>80 MHz</td><td>Horloge du processeur (vitesse de calcul)</td></tr>
+<tr><td>1 ms (1 kHz)</td><td>Période du SysTick : LED et détection des appuis longs</td></tr>
+<tr><td>100 kHz</td><td>Fréquence d'horloge du bus I²C (communication avec le BH1750)</td></tr>
+<tr><td>9600 / 115 200 bauds</td><td>Vitesses des liaisons UART (GPS / console)</td></tr>
+<tr><td>≈ 312 kHz puis 10 MHz</td><td>Horloge SPI de la carte SD (initialisation, puis transferts)</td></tr>
+<tr><td>1 Hz</td><td>Fréquence du clignotement d'erreur de la LED</td></tr>
+<tr><td>2 s / 0,5 s</td><td>Délai entre deux essais du DHT11 / du BH1750 pendant une acquisition</td></tr>
+<tr><td>LOG_INTERVAL (10 min par défaut)</td><td><b>Intervalle d'enregistrement</b> : temps entre deux mesures complètes écrites sur la SD</td></tr>
+<tr><td>TIMEOUT (30 s)</td><td>Temps maximal d'attente d'un capteur</td></tr>
+</table>
+<div class="ar" lang="ar"><p>القيمة «80 هرتز» <b>غير موجودة</b>. القيمة الحقيقية <b>80 ميغاهرتز</b> وهي <b>تردد ساعة المعالج</b> أي سرعة تنفيذ التعليمات، ونحصل عليها من المذبذب الداخلي 16 ميغاهرتز عبر PLL. لا يجب الخلط بين: تردد المعالج (80 ميغاهرتز)، دورة SysTick (1 ميلي ثانية)، سرعة ناقل I²C (100 كيلوهرتز)، سرعات UART (9600 و115200)، وفاصل التسجيل LOG_INTERVAL (10 دقائق) الذي هو المدة بين قياسين مسجَّلين.</p></div>
+</div>
+
+<div class="card" id="c-log">
+<h4>LOG_INTERVAL et la valeur de 20 secondes</h4>
+<div class="fr"><p><b>Définition :</b> intervalle entre deux acquisitions enregistrées. <b>Défaut :</b> 10 minutes (document des modes et code). <b>Réglage :</b> <code>LOG_INTERVAL=10</code> = 10 minutes ; notre programme accepte aussi des secondes avec un « S » : <code>LOG_INTERVAL=20S</code> = 20 secondes (plage 5 à 86 400 s). <b>Pourquoi 20 s :</b> pour les essais et la démonstration, attendre 10 minutes entre deux mesures serait trop long ; et une erreur capteur n'apparaît qu'après <b>deux</b> acquisitions en échec. Cette utilisation est indiquée dans la présentation (diapositives 13 et 14) ; elle n'est pas chiffrée dans un rapport de test. <b>Mode économique :</b> l'intervalle est multiplié par 2.</p></div>
+<div class="ar" lang="ar"><p><b>LOG_INTERVAL</b> هو المدة بين قياسين مسجَّلين، افتراضيًا 10 دقائق. برنامجنا يقبل أيضًا الثواني بإضافة حرف S، مثل <code>LOG_INTERVAL=20S</code> أي 20 ثانية. نستعمل 20 ثانية في التجارب والعرض العملي لأن انتظار 10 دقائق طويل جدًا، ولأن خطأ الحساس لا يظهر إلا بعد فشل قياسين متتاليين. في الوضع الاقتصادي تتضاعف المدة.</p></div>
+</div>
+
+<div class="card" id="c-rtc">
+<h4>RTC et GPS</h4>
+<div class="fr"><p><b>RTC (Real-Time Clock) :</b> horloge interne qui compte date et heure. Elle horodate chaque mesure et donne le nom du fichier. Elle tourne sur l'oscillateur <b>LSI</b> (configuration confirmée dans <code>stm32l4xx_hal_msp.c</code>), moins précis qu'un quartz : elle dérive. <b>GPS :</b> donne la position et l'heure UTC. Le programme utilise la trame <b>RMC</b> (champ 2 = statut, « A » = valide). <b>Lien entre les deux :</b> l'heure GPS sert à <b>recaler</b> la RTC (au premier fix, puis si l'écart dépasse 2 s), avec un décalage fixe UTC+1. On peut aussi régler l'heure à la main en configuration (<code>CLOCK=HH:MM:SS</code>, <code>DATE=MM,JJ,AAAA</code>). <b>Limite :</b> pas de gestion de l'heure d'été ; sans fix ni réglage, date et heure valent NA.</p></div>
+<div class="ar" lang="ar"><p><b>RTC</b> ساعة داخلية تحسب التاريخ والوقت لختم كل قياس وتسمية الملف، تعمل على المذبذب الداخلي LSI لذلك تنحرف قليلًا. <b>GPS</b> يعطي الموقع والوقت العالمي؛ نستعمل رسالة <b>RMC</b> وحالتها «A» تعني صالحة. وقت GPS يُستعمل لـ<b>تصحيح</b> الساعة RTC عند أول إشارة ثم كلما تجاوز الفرق ثانيتين. يمكن أيضًا ضبط الوقت يدويًا بالأوامر CLOCK وDATE.</p></div>
+</div>
+
+<div class="card" id="c-sd">
+<h4>Enregistrement sur la carte SD et FILE_MAX_SIZE</h4>
+<div class="fr"><p><b>Système de fichiers :</b> FAT32 géré par la bibliothèque <b>FatFS</b> ; la carte est lue en SPI1. <b>Nom des fichiers :</b> <code>AAMMJJ_N.LOG</code> (ex. <code>261021_0.LOG</code>) — format du document des modes. <b>Écriture :</b> on écrit toujours dans la révision 0. <b>FILE_MAX_SIZE</b> = taille maximale du fichier : <b>2 Ko (2 048 octets)</b> par défaut, comme le document des modes (« 2ko par défaut ») ; plage acceptée 256 à 4 194 304 octets. Quand l'ajout d'une ligne dépasserait cette taille, le fichier 0 est <b>copié</b> dans la première révision libre (<code>_1</code> à <code>_9</code>) puis <b>vidé</b>, et l'écriture reprend au début. <b>Pourquoi fermer le fichier à chaque ligne :</b> la fermeture garantit que les données sont réellement écrites ; si la carte est retirée ou l'alimentation coupée, on ne perd au plus que la ligne en cours [déduit]. <b>Limite :</b> au-delà de 9 archives le même jour (noms au format 8.3), l'archivage échoue et l'erreur d'écriture SD est signalée. <b>Ordre de grandeur :</b> une ligne fait environ 40 à 50 octets ; à 10 min d'intervalle, une journée fait environ 7 Ko, donc 3 à 4 archives par jour.</p></div>
+<div class="ar" lang="ar"><p>نظام الملفات FAT32 تديره مكتبة <b>FatFS</b> والبطاقة متصلة عبر SPI1. اسم الملف <code>AAMMJJ_N.LOG</code> (سنة شهر يوم _ رقم النسخة). الكتابة دائمًا في النسخة 0. <b>FILE_MAX_SIZE</b> هو الحجم الأقصى للملف: <b>2 كيلوبايت (2048 بايت)</b> افتراضيًا. عند امتلاء الملف يُنسخ إلى أول نسخة شاغرة من 1 إلى 9 ثم يُفرَّغ. نغلق الملف بعد كل سطر لضمان الكتابة الفعلية على البطاقة.</p></div>
+</div>
+
+<div class="card" id="c-err">
+<h4>Détection, priorité et signalisation des erreurs</h4>
+<table class="fr">
+<tr><th>Priorité</th><th>Erreur</th><th>Détection</th><th>LED (1 Hz)</th><th>Reprise</th></tr>
+<tr><td>1</td><td>Accès / écriture SD</td><td>Montage, ouverture, écriture ou fermeture en échec</td><td>Rouge / blanc, blanc 2× plus long</td><td>Carte démontée, nouveau montage à l'écriture suivante</td></tr>
+<tr><td>2</td><td>Carte SD pleine</td><td>Place libre &lt; ligne + FILE_MAX_SIZE</td><td>Rouge / blanc, durées égales</td><td>Dès qu'il y a de la place</td></tr>
+<tr><td>3</td><td>Horloge RTC</td><td>Lecture de l'heure ou de la date en échec</td><td>Rouge / bleu</td><td>À la première lecture réussie</td></tr>
+<tr><td>4</td><td>Capteur</td><td>DHT11 ou BH1750 : 2 acquisitions consécutives en TIMEOUT</td><td>Rouge / vert, durées égales</td><td>Dès une lecture valide</td></tr>
+<tr><td>5</td><td>GPS</td><td>2 acquisitions consécutives sans trame RMC</td><td>Rouge / jaune</td><td>Dès la trame suivante</td></tr>
+<tr><td>6</td><td>Donnée incohérente</td><td>Température hors [MIN_TEMP_AIR ; MAX_TEMP_AIR]</td><td>Rouge / vert, vert 2× plus long</td><td>Quand la valeur redevient plausible</td></tr>
+</table>
+<div class="fr"><p>Les codes couleur sont exactement ceux du document « Modes de fonctionnement ». Durées : 500 ms + 500 ms pour un rapport 1:1 ; 333 ms rouge + 667 ms pour 1:2. <b>Pourquoi 2 échecs avant l'erreur :</b> le document indique « après 2 mesures en timeout, le capteur est signalé en erreur » ; cela évite une fausse alerte sur un échec isolé. <b>Limites :</b> un échec à l'initialisation mène à <code>Error_Handler</code> (arrêt) ; pas de chien de garde (watchdog) ; erreurs non journalisées sur la carte.</p></div>
+<div class="ar" lang="ar"><p>كل خطأ له رمز لوني وفق وثيقة أوضاع التشغيل: وميض بتردد 1 هرتز بين الأحمر ولون ثانٍ، بمدد متساوية أو بنسبة 1 إلى 2. إذا وُجدت عدة أخطاء تُعرض الأعلى أولوية. يُعاد تقييم الأخطاء عند كل قياس فيختفي الخطأ عند زوال السبب. نشترط فشل قياسين متتاليين قبل إعلان خطأ الحساس كما تنص الوثيقة، لتجنب الإنذار الكاذب.</p></div>
+</div>
+
+<div class="card" id="c-modes">
+<h4>Les quatre modes (document « Modes de fonctionnement » + code)</h4>
+<table class="fr">
+<tr><th>Mode</th><th>LED</th><th>Comment on y entre</th><th>Ce qu'il fait</th></tr>
+<tr><td>Standard</td><td>Verte</td><td>Démarrage sans bouton ; retour depuis configuration (30 min sans commande ou EXIT) ou depuis éco (rouge 5 s)</td><td>Mesure toutes les LOG_INTERVAL, écriture SD</td></tr>
+<tr><td>Configuration</td><td>Jaune</td><td>Démarrage avec le bouton rouge maintenu</td><td>Acquisition arrêtée, commandes série, paramètres en Flash, boutons ignorés</td></tr>
+<tr><td>Maintenance</td><td>Orange</td><td>Rouge 5 s depuis standard ; rouge 5 s pour revenir au mode précédent</td><td>Carte SD démontée (retrait sans risque), mesures sur la console toutes les 2 s, rien n'est écrit</td></tr>
+<tr><td>Économique</td><td>Bleue</td><td>Vert 5 s depuis standard</td><td>Intervalle × 2, GPS lu une mesure sur deux</td></tr>
+</table>
+<div class="fr"><p><b>Point délicat :</b> le document dit que la maintenance est accessible depuis standard <i>ou</i> économique avec le rouge 5 s, mais aussi que, depuis économique, le rouge 5 s ramène en standard. Le même geste ne peut pas avoir deux effets : notre programme ramène en <b>standard</b> (constante <code>ECO_ROUGE_VERS_MAINTENANCE</code> = 0, modifiable).</p></div>
+<div class="ar" lang="ar"><p>الأوضاع الأربعة: <b>العادي</b> (أخضر) للقياس والتسجيل؛ <b>الإعداد</b> (أصفر) عند التشغيل مع ضغط الزر الأحمر لضبط الإعدادات؛ <b>الصيانة</b> (برتقالي) بضغط الأحمر 5 ثوانٍ لإخراج البطاقة بأمان؛ <b>الاقتصادي</b> (أزرق) بضغط الأخضر 5 ثوانٍ لمضاعفة المدة وقراءة GPS مرة كل قياسين. من الوضع الاقتصادي، ضغط الأحمر يعيد إلى الوضع العادي (اختيارنا لأن الوثيقة تذكر وجهتين لنفس الحركة).</p></div>
+</div>
+
+<h3 id="p1-glossaire">1.6 Glossaire technique français – arabe</h3>
+<table>
+<tr><th style="width:20%">Terme</th><th class="fr" style="width:38%">Explication (français)</th><th class="ar" lang="ar">الشرح (بالعربية)</th></tr>
+<tr><td><b>STM32</b></td><td class="fr">Famille de microcontrôleurs ARM de STMicroelectronics ; ici le STM32L476RG.</td><td class="ar" lang="ar">عائلة متحكمات دقيقة من شركة ST مبنية على ARM؛ نستعمل STM32L476RG.</td></tr>
+<tr><td><b>Microcontrôleur</b></td><td class="fr">Puce qui réunit processeur, mémoire et périphériques ; elle exécute notre programme.</td><td class="ar" lang="ar">متحكم دقيق: شريحة تجمع المعالج والذاكرة والأطراف وتنفّذ برنامجنا.</td></tr>
+<tr><td><b>Capteur</b></td><td class="fr">Composant qui transforme une grandeur physique (température, lumière) en donnée.</td><td class="ar" lang="ar">حسّاس: مكوّن يحوّل مقدارًا فيزيائيًا (حرارة، ضوء) إلى معطى رقمي.</td></tr>
+<tr><td><b>Acquisition</b></td><td class="fr">Lecture des capteurs pour obtenir une mesure ; dans AURA, une acquisition = RTC + DHT11 + BH1750 + GPS.</td><td class="ar" lang="ar">الاقتناء/القياس: قراءة الحساسات للحصول على قيمة؛ عندنا القياس الواحد يشمل الساعة وDHT11 وBH1750 وGPS.</td></tr>
+<tr><td><b>Fréquence d'échantillonnage / intervalle</b></td><td class="fr">Rythme des mesures. Dans AURA on parle plutôt d'<b>intervalle</b> : LOG_INTERVAL = 10 min par défaut (soit 1 mesure toutes les 600 s).</td><td class="ar" lang="ar">تردد أخذ العيّنات/الفاصل الزمني: إيقاع القياسات؛ عندنا نتكلم عن الفاصل LOG_INTERVAL وهو 10 دقائق افتراضيًا.</td></tr>
+<tr><td><b>UART</b></td><td class="fr">Liaison série asynchrone à 2 fils (TX/RX), point à point ; GPS et console.</td><td class="ar" lang="ar">وصلة تسلسلية غير متزامنة بسلكين بين جهازين؛ نستعملها لـGPS والحاسوب.</td></tr>
+<tr><td><b>I²C</b></td><td class="fr">Bus série synchrone à 2 fils (SCL/SDA), plusieurs esclaves adressés ; BH1750.</td><td class="ar" lang="ar">ناقل تسلسلي متزامن بسلكين (ساعة وبيانات) يقبل عدة أجهزة بعناوين؛ نستعمله لـBH1750.</td></tr>
+<tr><td><b>Bus</b></td><td class="fr">Ensemble de fils partagés par plusieurs composants pour communiquer.</td><td class="ar" lang="ar">ناقل: مجموعة أسلاك مشتركة بين عدة مكوّنات للتواصل.</td></tr>
+<tr><td><b>Adresse I²C</b></td><td class="fr">Numéro qui identifie un esclave sur le bus ; 0x23 pour le BH1750.</td><td class="ar" lang="ar">عنوان I²C: رقم يميّز الجهاز على الناقل؛ 0x23 للحساس BH1750.</td></tr>
+<tr><td><b>Baud rate</b></td><td class="fr">Vitesse d'une liaison série en bits par seconde ; 9600 (GPS), 115 200 (console).</td><td class="ar" lang="ar">سرعة الوصلة التسلسلية بالبت في الثانية؛ 9600 لـGPS و115200 للحاسوب.</td></tr>
+<tr><td><b>SPI</b></td><td class="fr">Bus série synchrone à 4 fils (SCK, MISO, MOSI, CS), rapide ; carte SD.</td><td class="ar" lang="ar">ناقل تسلسلي متزامن بأربعة أسلاك وسريع؛ نستعمله لبطاقة SD.</td></tr>
+<tr><td><b>GPIO</b></td><td class="fr">Broche d'entrée/sortie numérique ; LED (sorties), boutons et DHT11.</td><td class="ar" lang="ar">منفذ إدخال/إخراج رقمي؛ للـLED والأزرار وDHT11.</td></tr>
+<tr><td><b>Interruption</b></td><td class="fr">Signal qui suspend le programme pour exécuter une courte routine (octet reçu, bouton appuyé, tick de 1 ms).</td><td class="ar" lang="ar">مقاطعة: إشارة توقف البرنامج مؤقتًا لتنفيذ روتين قصير (وصول بايت، ضغط زر، نبضة كل 1 ميلي ثانية).</td></tr>
+<tr><td><b>Polling</b></td><td class="fr">Interroger régulièrement un état dans la boucle. AURA l'utilise pour comparer l'heure de la prochaine mesure (<code>HAL_GetTick()</code>) et pour lire les capteurs.</td><td class="ar" lang="ar">الاستطلاع الدوري: فحص حالة باستمرار داخل الحلقة؛ نستعمله لمعرفة وقت القياس التالي وقراءة الحساسات.</td></tr>
+<tr><td><b>DMA</b></td><td class="fr">Transfert de données sans le processeur. <b>Non utilisé</b> dans AURA (réceptions UART par interruption, octet par octet).</td><td class="ar" lang="ar">نقل البيانات دون المعالج. <b>غير مستعمل</b> في مشروعنا.</td></tr>
+<tr><td><b>RTC</b></td><td class="fr">Horloge temps réel interne ; date et heure des mesures.</td><td class="ar" lang="ar">ساعة الوقت الحقيقي الداخلية؛ تعطي تاريخ ووقت القياسات.</td></tr>
+<tr><td><b>GPS / NMEA / RMC</b></td><td class="fr">Le GPS envoie des phrases texte NMEA ; la trame RMC contient heure, statut, latitude, longitude, date.</td><td class="ar" lang="ar">GPS يرسل جملًا نصية بصيغة NMEA؛ رسالة RMC تحتوي الوقت والحالة وخطي العرض والطول والتاريخ.</td></tr>
+<tr><td><b>Carte SD</b></td><td class="fr">Mémoire amovible où sont écrits les fichiers de mesures.</td><td class="ar" lang="ar">ذاكرة قابلة للنزع تُكتب عليها ملفات القياسات.</td></tr>
+<tr><td><b>Système de fichiers (FAT32, FatFS)</b></td><td class="fr">Organisation des fichiers sur la carte ; FAT32 est lisible par un PC ; FatFS est la bibliothèque qui le gère sur le STM32.</td><td class="ar" lang="ar">طريقة تنظيم الملفات؛ FAT32 يقرؤه الحاسوب، وFatFS هي المكتبة التي تديره على STM32.</td></tr>
+<tr><td><b>Flash</b></td><td class="fr">Mémoire non volatile du STM32 : programme + paramètres sauvegardés.</td><td class="ar" lang="ar">ذاكرة دائمة في STM32 تحفظ البرنامج والإعدادات.</td></tr>
+<tr><td><b>Compilation</b></td><td class="fr">Transformer le code C en programme exécutable (<code>Aura.elf</code>) avec CMake, Ninja et arm-none-eabi-gcc.</td><td class="ar" lang="ar">الترجمة: تحويل كود C إلى برنامج تنفيذي باستعمال CMake وNinja وarm-none-eabi-gcc.</td></tr>
+<tr><td><b>Flashage / téléversement</b></td><td class="fr">Écrire le programme dans la Flash du STM32 via le ST-LINK (STM32_Programmer_CLI).</td><td class="ar" lang="ar">رفع البرنامج: كتابته في ذاكرة Flash عبر ST-LINK.</td></tr>
+<tr><td><b>Débogage</b></td><td class="fr">Recherche et correction d'erreurs ; le ST-LINK permet de suivre l'exécution, et la console affiche des messages.</td><td class="ar" lang="ar">تصحيح الأخطاء: البحث عنها وإصلاحها باستعمال ST-LINK ورسائل وحدة التحكم.</td></tr>
+<tr><td><b>Diagnostic</b></td><td class="fr">Test intégré au démarrage (B1 maintenu) qui vérifie chaque composant.</td><td class="ar" lang="ar">تشخيص: اختبار مدمج عند التشغيل يتحقق من كل مكوّن.</td></tr>
+<tr><td><b>Validation</b></td><td class="fr">Vérifier que le système fait ce qui est attendu (tests unitaires, intégration, lecture des fichiers).</td><td class="ar" lang="ar">التحقق: التأكد من أن النظام يؤدي المطلوب (اختبارات الوحدات، التكامل، قراءة الملفات).</td></tr>
+<tr><td><b>Timeout</b></td><td class="fr">Temps maximal d'attente d'une réponse ; 30 s par défaut, puis valeur NA.</td><td class="ar" lang="ar">المهلة القصوى لانتظار الرد؛ 30 ثانية ثم تُكتب NA.</td></tr>
+<tr><td><b>Récupération d'erreur</b></td><td class="fr">Retour automatique au fonctionnement normal quand la cause disparaît.</td><td class="ar" lang="ar">التعافي من الخطأ: العودة التلقائية إلى العمل العادي عند زوال السبب.</td></tr>
+<tr><td><b>Journalisation</b></td><td class="fr">Enregistrement d'événements. AURA journalise les <b>mesures</b> sur SD, mais <b>pas les erreurs</b>.</td><td class="ar" lang="ar">التسجيل: حفظ الأحداث؛ نسجّل <b>القياسات</b> على البطاقة لكن <b>لا نسجّل الأخطاء</b>.</td></tr>
+<tr><td><b>Anti-rebond</b></td><td class="fr">Filtrage des rebonds mécaniques d'un bouton : on ignore les fronts à moins de 20 ms.</td><td class="ar" lang="ar">إزالة الارتداد: تجاهل التقلبات الميكانيكية للزر خلال 20 ميلي ثانية.</td></tr>
+<tr><td><b>SysTick</b></td><td class="fr">Minuterie du cœur ARM qui génère une interruption toutes les 1 ms.</td><td class="ar" lang="ar">مؤقت نواة ARM يولّد مقاطعة كل 1 ميلي ثانية.</td></tr>
+</table>
+
+<div class="part">PARTIE 2</div>
+<h2 id="partie2" class="nobreak">Préparation individuelle des quatre membres</h2>
+<div class="card fr">
+<p><b>Ordre de passage</b> (la parole change plusieurs fois, préparez bien les transitions) :</p>
+<p>Membre 1 (1, 2) → Membre 2 (3) → Membre 3 (4, 5, 6) → Membre 1 (7, 8) → Membre 2 (9, 10, 11) → Membre 4 (12, 13, 14, 15) → Membre 3 (16).</p>
+<p class="small">Dans les scripts, remplacez « [Membre X] » par le prénom de la personne suivante.</p>
+</div>
+<div class="card ar" lang="ar"><p><b>ترتيب الكلام:</b> العضو 1 (1، 2) ← العضو 2 (3) ← العضو 3 (4، 5، 6) ← العضو 1 (7، 8) ← العضو 2 (9، 10، 11) ← العضو 4 (12 إلى 15) ← العضو 3 (16). استبدلوا «[Membre X]» باسم الشخص التالي.</p></div>
+
+<!-- ======================= MEMBRE 1 ======================= -->
+<section class="member" id="m1">
+<h2 class="nobreak">Membre 1 — diapositives 1, 2, 7 et 8</h2>
+<p class="fr">Vous ouvrez la soutenance, puis vous expliquez le cœur du fonctionnement : comment une mesure est faite et comment elle est enregistrée sur la carte SD.</p>
+<p class="ar" lang="ar">أنت تفتتح المناقشة، ثم تشرح قلب النظام: كيف يُؤخذ القياس وكيف يُسجَّل على بطاقة SD.</p>
+
+<div class="slide" id="s1">
+<h3><span class="tag">Diapositive 1</span>Couverture — « Station météorologique embarquée sur STM32 »</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Titre, sous-titre « Conception et réalisation d'un système de mesure météorologique destiné à être installé sur un bateau », mention du projet Worldwide Weather Watcher, prototype « AURA » sur carte NUCLEO-L476RG, l'équipe, et un schéma de principe : la puce STM32 entourée de 6 icônes (thermomètre, soleil, position, disquette/SD, ampoule/LED, horloge).</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<p class="ar" lang="ar">هذه شريحة الغلاف. الرسم في اليمين ليس زينة فقط: في الوسط المتحكم STM32 وحوله ستة رموز تمثل العتاد الحقيقي: الحرارة والرطوبة (DHT11)، الإضاءة (BH1750)، الموقع (GPS)، التخزين (بطاقة SD)، حالة النظام (LED)، والوقت (ساعة RTC). اسم المشروع العام هو Worldwide Weather Watcher، واسم نموذجنا الأولي AURA. يجب أن تقول بوضوح إنه نموذج مختبري وليس جهازًا مركّبًا فعلًا على سفينة.</p>
+<h4>C. Explication technique</h4>
+<p class="fr">Le schéma résume l'architecture : un microcontrôleur central et six fonctions périphériques. Il annonce déjà les trois verbes du projet : <b>mesurer</b> (capteurs), <b>horodater</b> (RTC/GPS), <b>enregistrer</b> (SD), plus la <b>signalisation</b> (LED).</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Bonjour à toutes et à tous. Nous sommes [prénoms]. Nous allons vous présenter AURA, notre station météorologique embarquée, réalisée sur une carte STM32 Nucleo dans le cadre du projet Worldwide Weather Watcher. Cette station est destinée à être installée sur un bateau ; ce que nous présentons aujourd'hui est un prototype de laboratoire. Comme le montre le schéma, tout est organisé autour du microcontrôleur STM32, relié aux capteurs, à une horloge, à une carte SD et à une LED d'état. Voici maintenant le sommaire de notre présentation. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«مرحبًا بالجميع. نحن [الأسماء]. سنقدّم لكم AURA، محطتنا للأرصاد الجوية المدمجة، المنجزة على بطاقة STM32 Nucleo في إطار مشروع Worldwide Weather Watcher. هذه المحطة مخصّصة للتركيب على سفينة، وما نقدّمه اليوم نموذج أولي مختبري. كما يبيّن الرسم، كل شيء منظّم حول المتحكم STM32 المتصل بالحساسات وبساعة وببطاقة SD وبضوء LED للحالة. إليكم الآن فهرس العرض.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li><b>Faits :</b> carte NUCLEO-L476RG, microcontrôleur STM32L476RG, projet WWW, prototype AURA.</li><li><b>Mécanisme :</b> le STM32 est le seul élément qui calcule ; tout passe par lui.</li><li><b>Justification :</b> « prototype de laboratoire » : pas de test en mer, alimentation par USB.</li></ul>
+<h4>F. Liens</h4><p class="fr">Chaque icône correspond à une diapositive détaillée plus loin : matériel (4), liaisons (5), acquisition (7), carte SD (8), erreurs et LED (11).</p>
+</div>
+
+<div class="slide" id="s2">
+<h3><span class="tag">Diapositive 2</span>Sommaire</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Cinq parties : 01 Contexte et objectifs ; 02 Matériel et architecture ; 03 Acquisition et stockage ; 04 Modes, interruptions et erreurs ; 05 Script, tests et démonstration. Une barre en bas : Présentation → Démonstration → Questions.</p>
+<div class="warn fr"><b>Attention :</b> les noms « Membre 1 », « Membres 1 et 2 »… écrits sur cette diapositive correspondent à l'ancienne répartition. Ne les lisez pas (ou corrigez-les dans PowerPoint) : présentez seulement les parties.</div>
+<h4>B. Ce que vous devez comprendre</h4>
+<p class="ar" lang="ar">الفهرس يعرض منطق العرض: نبدأ بالحاجة (لماذا المشروع)، ثم العتاد (بماذا)، ثم كيف نقيس ونسجّل (قلب النظام)، ثم كيف يتحكم المستخدم في المحطة وكيف تُعالج الأخطاء، وأخيرًا كيف نترجم البرنامج ونرفعه ونختبره، ثم العرض العملي. انتبه: أسماء الأعضاء المكتوبة على الشريحة قديمة فلا تقرأها.</p>
+<h4>C. Explication technique</h4>
+<p class="fr">L'ordre suit le chemin d'une donnée : besoin → matériel → acquisition → stockage → pilotage et fiabilité → outillage et validation.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Notre présentation suit cinq parties. Nous commencerons par le contexte et nos objectifs. Nous présenterons ensuite le matériel et l'organisation du programme. La troisième partie montrera comment une mesure est acquise puis enregistrée sur la carte SD. Nous expliquerons ensuite les quatre modes de fonctionnement, les interruptions et la gestion des erreurs. Enfin, nous parlerons du script de compilation, de nos tests et du scénario de la démonstration, qui suivra cette présentation. Je laisse la parole à [Membre 2] pour le contexte. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«يتكوّن عرضنا من خمسة أجزاء. نبدأ بالسياق وأهدافنا، ثم نقدّم العتاد وتنظيم البرنامج. الجزء الثالث يبيّن كيف يُؤخذ القياس ثم يُسجَّل على بطاقة SD. بعد ذلك نشرح أوضاع التشغيل الأربعة والمقاطعات ومعالجة الأخطاء. وأخيرًا نتحدث عن سكربت الترجمة واختباراتنا وسيناريو العرض العملي الذي سيلي هذا العرض. أترك الكلمة لـ[العضو 2] للحديث عن السياق.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li>Les 5 parties dans l'ordre, et qui présente quoi (nouvelle répartition).</li><li>La démonstration est un moment séparé, après la présentation.</li></ul>
+<h4>F. Liens</h4><p class="fr">Vous reprenez la parole à la diapositive 7 (début de la partie 03) : retenez-le.</p>
+</div>
+
+<div class="slide" id="s7">
+<h3><span class="tag">Diapositive 7</span>Chaque acquisition produit une ligne horodatée</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Quatre étapes numérotées : 1 Horodatage (RTC interne), 2 Température et humidité (DHT11, 1 fil), 3 Luminosité (BH1750, I2C1), 4 Position (GPS, USART3). Un bloc « Une ligne horodatée par acquisition (séparateur ; ) » avec les 7 champs : date, heure, latitude, longitude, temp. °C, hum. %, lux ; « Valeur absente ou invalide → NA » ; « Destinations : carte SD (STANDARD, ÉCO) · console série ». Un bloc « Règles de traitement ».</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<div class="ar" lang="ar">
+<p>القياس الواحد (acquisition) سلسلة من أربع مراحل متتالية تنفذها الدالة <code>acquerir()</code>:</p>
+<p><b>1. ختم الوقت:</b> قراءة التاريخ والوقت من ساعة RTC الداخلية. إذا لم تُضبط الساعة أبدًا (لا GPS ولا أوامر CLOCK/DATE) يُكتب NA.</p>
+<p><b>2. DHT11:</b> المتحكم يرسل إشارة بداية على المنفذ PB0، ثم يستقبل 40 بت (رطوبة، حرارة، ومجموع تحقق checksum). مدة كل بت تُقاس بعدّاد الدورات DWT (80 دورة = 1 ميكروثانية) لأن العدّ بالحلقات كان يعطي أصفارًا في وضع Debug. إذا فشلت القراءة تُعاد المحاولة كل ثانيتين حتى المهلة TIMEOUT (30 ثانية).</p>
+<p><b>3. BH1750:</b> عبر ناقل I2C1 بالعنوان 0x23 في الوضع المستمر عالي الدقة. القيمة الخام مقسومة على 1.2 تعطي اللوكس. محاولة كل نصف ثانية حتى المهلة.</p>
+<p><b>4. GPS:</b> رسائل NMEA تصل باستمرار عبر المقاطعات على USART3. نحتفظ بآخر رسالة RMC ونشترط الحالة «A» أي موقع صالح، ونحوّل الإحداثيات إلى درجات عشرية. وقت GPS يُستعمل أيضًا لتصحيح الساعة.</p>
+<p>بعد ذلك يُبنى <b>سطر واحد</b> من 7 حقول مفصولة بـ«;». أي قيمة غائبة تصبح NA حتى يبقى عدد الحقول ثابتًا. يُعرض السطر على وحدة التحكم دائمًا، ويُكتب على البطاقة فقط في الوضعين العادي والاقتصادي.</p>
+<p><b>قواعد المعالجة:</b> حساس صامت أو معطَّل ← NA؛ حرارة خارج الحدود (−10 و60 درجة افتراضيًا) ← NA وخطأ «بيانات غير متناسقة»؛ الرطوبة تُهمل خارج المجال [HYGR_MINT ; HYGR_MAXT]؛ الإضاءة تُصنّف ضعيفة/متوسطة/قوية على وحدة التحكم فقط.</p>
+</div>
+<h4>C. Explication technique</h4>
+<p class="fr">L'acquisition est <b>séquentielle</b> et <b>tolérante aux pannes</b> : chaque capteur a son propre délai maximal (TIMEOUT), et un capteur muet donne NA sans bloquer les autres. Entre deux étapes, le programme vérifie les boutons : un appui long annule proprement l'acquisition en cours. La ligne a toujours le même format, ce qui la rend facile à exploiter dans un tableur.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Je vais maintenant vous expliquer ce qui se passe à chaque mesure. Une acquisition se fait en quatre étapes. D'abord, l'horodatage : on lit la date et l'heure dans la RTC du microcontrôleur. Ensuite, le DHT11 : le STM32 lui envoie un signal de départ, puis il chronomètre les 40 bits de la réponse grâce au compteur de cycles DWT, et il vérifie la somme de contrôle. Si la lecture échoue, il réessaie toutes les deux secondes, jusqu'au TIMEOUT de 30 secondes. Troisième étape, le BH1750, sur le bus I²C : la valeur brute divisée par 1,2 donne directement des lux. Enfin, le GPS : ses trames arrivent en permanence par interruption ; nous gardons la dernière trame RMC et nous exigeons le statut A, qui signifie position valide. Tout est ensuite assemblé en une seule ligne de sept champs séparés par des points-virgules. Si une valeur manque, on écrit NA, pour que la ligne garde toujours le même format. Cette ligne est affichée sur la console et, en mode standard ou économique, enregistrée sur la carte SD. Voyons justement comment elle est écrite. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«سأشرح الآن ما يحدث في كل قياس. يتم القياس في أربع مراحل. أولًا ختم الوقت: نقرأ التاريخ والوقت من ساعة RTC في المتحكم. ثانيًا DHT11: يرسل له STM32 إشارة بداية، ثم يقيس مدة البتات الأربعين في الرد بعدّاد الدورات DWT، ويتحقق من مجموع التحقق. إذا فشلت القراءة يعيد المحاولة كل ثانيتين حتى المهلة 30 ثانية. ثالثًا BH1750 على ناقل I²C: القيمة الخام مقسومة على 1.2 تعطي اللوكس مباشرة. وأخيرًا GPS: رسائله تصل باستمرار عبر المقاطعات، نحتفظ بآخر رسالة RMC ونشترط الحالة A التي تعني موقعًا صالحًا. ثم يُجمَع كل شيء في سطر واحد من سبعة حقول مفصولة بفواصل منقوطة. إذا غابت قيمة نكتب NA ليبقى شكل السطر ثابتًا. يُعرض هذا السطر على وحدة التحكم، ويُسجَّل على بطاقة SD في الوضع العادي أو الاقتصادي. لنرَ الآن كيف يُكتب.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr">
+<li><b>Faits :</b> ordre RTC → DHT11 → BH1750 → GPS ; DHT11 sur PB0 ; BH1750 0x23 sur I2C1 ; GPS 9600 bauds sur USART3 ; TIMEOUT 30 s ; essais toutes les 2 s (DHT11) et 0,5 s (BH1750) ; 7 champs ; séparateur « ; ».</li>
+<li><b>Mécanismes :</b> pourquoi NA (format constant) ; trame RMC et statut A ; recalage de la RTC par le GPS ; acquisition interruptible.</li>
+<li><b>Justifications :</b> DWT car le comptage par boucles était faussé en Debug (commentaire de <code>dht11.c</code>) ; conversion GPS en entiers car le <code>printf</code> de newlib-nano ne gère pas <code>%f</code> (commentaire de <code>station.c</code>).</li>
+</ul>
+<h4>F. Liens</h4><p class="fr">TIMEOUT et « 2 échecs » → erreurs (diapositive 11) ; GPS et SysTick/UART → interruptions (10) ; destination SD → diapositive 8 ; intervalle entre acquisitions → modes (9).</p>
+</div>
+
+<div class="slide" id="s8">
+<h3><span class="tag">Diapositive 8</span>Enregistrement des mesures sur la carte SD</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Cinq étapes : 1 Monter la carte (FatFS via SPI1) ; 2 Vérifier la place (place libre ≥ ligne + FILE_MAX_SIZE, sinon « carte pleine ») ; 3 Ouvrir le fichier du jour AAMMJJ_0.LOG ; 4 Archiver si plein (copie en _1 … _9, puis vidé) ; 5 Écrire et fermer (en-tête si vide, ajout de la ligne, fermeture). Deux captures réelles : le fichier <code>261021_0</code> et son contenu. Un bloc « Rôle de la carte SD ».</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<div class="ar" lang="ar">
+<p>بطاقة SD هي <b>ذاكرة المحطة</b>: تحفظ كل القياسات دون الحاجة إلى حاسوب متصل. متصلة عبر ناقل <b>SPI1</b> (المنافذ PA5 وPA6 وPA7 وPB6 للاختيار CS)، ومهيّأة بنظام <b>FAT32</b> لكي يقرأها الحاسوب مباشرة. مكتبة <b>FatFS</b> تدير الملفات.</p>
+<p>عند كل قياس (في الوضع العادي أو الاقتصادي) تنفذ الدالة <code>enregistrer()</code> خمس مراحل: (1) تركيب البطاقة إن لم تكن مركّبة؛ (2) التحقق من وجود مساحة كافية لسطر جديد ولنسخة أرشيف، وإلا يظهر خطأ «البطاقة ممتلئة»؛ (3) فتح ملف اليوم واسمه السنة والشهر واليوم ثم _0؛ (4) إذا كان إضافة السطر سيجعل الملف يتجاوز <b>FILE_MAX_SIZE</b> (2 كيلوبايت = 2048 بايت افتراضيًا) يُنسخ الملف إلى أول نسخة شاغرة _1 إلى _9 ثم يُفرّغ؛ (5) كتابة الترويسة إذا كان الملف فارغًا، ثم إضافة السطر، ثم <b>إغلاق</b> الملف. الإغلاق هو ما يضمن أن البيانات كُتبت فعلًا.</p>
+<p><b>الصور الحقيقية:</b> الملف <code>261021_0</code> يعني 21 أكتوبر 2026، النسخة 0. السطر الأول ترويسة الأعمدة، ثم سطر لكل قياس. خطّا العرض والطول NA لأنه لم يكن هناك موقع GPS أثناء التجربة (داخل المبنى). ويندوز يخفي الامتداد .LOG.</p>
+</div>
+<h4>C. Explication technique</h4>
+<p class="fr">On écrit toujours dans la <b>révision 0</b> ; les révisions 1 à 9 sont des archives (format du document « Modes de fonctionnement »). La vérification de place réserve ligne + FILE_MAX_SIZE, car il faut pouvoir copier une archive. En cas d'échec d'ouverture, d'écriture ou de fermeture : la carte est démontée et l'erreur « accès SD » est levée ; un nouveau montage est tenté à la mesure suivante. En mode maintenance, la carte est démontée volontairement pour pouvoir la retirer.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« La carte SD est la mémoire de la station : elle conserve toutes les mesures, sans qu'un ordinateur soit connecté. Elle est reliée en SPI et formatée en FAT32, donc on peut lire les fichiers directement sur un PC. À chaque mesure, le programme suit cinq étapes. Il monte la carte si nécessaire. Il vérifie qu'il reste assez de place ; sinon, il signale l'erreur "carte pleine". Il ouvre le fichier du jour, dont le nom contient l'année, le mois et le jour, suivi du numéro de révision 0. Si ce fichier atteint la taille maximale, FILE_MAX_SIZE, soit 2 kilo-octets par défaut, il est copié en révision 1 à 9, puis vidé. Enfin, il ajoute la ligne et ferme le fichier : c'est la fermeture qui garantit que les données sont réellement écrites. Les captures montrent un vrai fichier de notre carte : 261021_0, le 21 octobre 2026, révision 0. On voit l'en-tête des colonnes, puis une ligne par mesure ; la position vaut NA car aucun signal GPS n'était disponible pendant cet essai. Je laisse la parole à [Membre 2], qui va vous présenter les modes de fonctionnement. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«بطاقة SD هي ذاكرة المحطة: تحفظ كل القياسات دون حاسوب متصل. هي موصولة عبر SPI ومهيّأة بنظام FAT32، لذا يمكن قراءة الملفات مباشرة على الحاسوب. عند كل قياس يتبع البرنامج خمس مراحل: يركّب البطاقة إن لزم، ويتحقق من وجود مساحة كافية وإلا يعلن خطأ "البطاقة ممتلئة"، ويفتح ملف اليوم الذي يحمل اسمه السنة والشهر واليوم ثم رقم النسخة 0. إذا بلغ هذا الملف الحجم الأقصى FILE_MAX_SIZE، أي 2 كيلوبايت افتراضيًا، يُنسخ إلى نسخة من 1 إلى 9 ثم يُفرَّغ. وأخيرًا يضيف السطر ويغلق الملف، والإغلاق هو ما يضمن الكتابة الفعلية. تُظهر الصور ملفًا حقيقيًا من بطاقتنا: 261021_0 أي 21 أكتوبر 2026، النسخة 0. نرى ترويسة الأعمدة ثم سطرًا لكل قياس، والموقع NA لعدم توفر إشارة GPS أثناء التجربة. أترك الكلمة لـ[العضو 2] ليقدّم أوضاع التشغيل.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr">
+<li><b>Faits :</b> SPI1 (PA5/PA6/PA7, CS PB6) ; FAT32 ; FatFS ; nom <code>AAMMJJ_N.LOG</code> ; FILE_MAX_SIZE = 2 048 octets ; archives _1 à _9 ; en-tête <code>date;heure;latitude;longitude;temperature_C;humidite_pct;luminosite_lux</code>.</li>
+<li><b>Mécanismes :</b> pourquoi fermer à chaque ligne ; pourquoi « ligne + FILE_MAX_SIZE » pour la place libre ; démontage en maintenance ; remontage automatique après erreur.</li>
+<li><b>Limites :</b> au-delà de 9 archives le même jour, l'archivage échoue (erreur SD) ; si l'heure n'a jamais été réglée, le fichier s'appelle <code>000000_0.LOG</code>.</li>
+</ul>
+<h4>F. Liens</h4><p class="fr">Erreurs SD (11) ; mode maintenance (9) ; FILE_MAX_SIZE dans le tableau des paramètres (15) ; lecture du fichier sur PC = étape 7 de la démonstration (14).</p>
+</div>
+</section>
+
+<!-- ======================= MEMBRE 2 ======================= -->
+<section class="member" id="m2">
+<h2 class="nobreak">Membre 2 — diapositives 3, 9, 10 et 11</h2>
+<p class="fr">Vous présentez le besoin, puis la façon dont l'équipage pilote la station (modes), comment le programme réagit aux événements (interruptions) et comment il gère les pannes (erreurs).</p>
+<p class="ar" lang="ar">تقدّم الحاجة إلى المشروع، ثم كيف يتحكم الطاقم في المحطة (الأوضاع)، وكيف يتفاعل البرنامج مع الأحداث (المقاطعات)، وكيف يعالج الأعطال (الأخطاء).</p>
+
+<div class="slide" id="s3">
+<h3><span class="tag">Diapositive 3</span>Mesurer la météo à bord, avec une station simple à piloter</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">« Le besoin de l'AIVM » (3 phrases), « Notre mission » (concevoir sur STM32 une station qui mesure, horodate et enregistre de façon fiable, tout en restant simple à piloter), et trois cartes : Mesurer, Enregistrer, Piloter simplement.</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<p class="ar" lang="ar">الوكالة AIVM تريد تجهيز السفن بمحطات أرصاد لقياس العوامل المرتبطة بتكوّن الأعاصير، وعلى المدى البعيد تبادل البيانات بين السفن (هذا ليس جزءًا من نموذجنا). شرط شركات الملاحة: محطة بسيطة وفعالة يشغّلها أحد أفراد الطاقم. مهمّتنا تجيب عن سؤال واحد: كيف نصنع على STM32 محطة <b>تقيس</b> و<b>تختم بالوقت</b> و<b>تسجّل</b> بشكل موثوق، مع بقائها <b>سهلة الاستعمال</b>؟ البطاقات الثلاث تلخّص الحل: نقيس الحرارة والرطوبة والإضاءة والموقع؛ نسجّل سطرًا لكل قياس على بطاقة SD؛ ونتحكم بزرّين وضوء LED ووحدة تحكم تسلسلية.</p>
+<h4>C. Explication technique</h4>
+<p class="fr">La « simplicité » se traduit techniquement par : 2 boutons seulement, un code couleur sur une LED, des réglages sauvegardés en Flash (pas besoin de reconfigurer), un fonctionnement autonome sans PC. La « fiabilité » se traduit par : NA au lieu de blocage, TIMEOUT, fermeture du fichier à chaque ligne, retrait sûr de la carte en maintenance.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Le sujet nous place dans le rôle d'une start-up mandatée par l'AIVM, l'Agence internationale pour la vigilance météorologique. L'agence veut équiper des navires de stations météo, afin de mesurer les paramètres qui influencent la formation des cyclones. Les compagnies maritimes acceptent, à une condition : la station doit rester simple, et pouvoir être pilotée par un membre d'équipage qui n'est pas spécialiste. Notre mission était donc de concevoir sur STM32 une station qui mesure, horodate et enregistre ses données de façon fiable, tout en restant simple à utiliser. Concrètement, elle mesure la température de l'air, l'humidité, la luminosité et la position GPS ; elle enregistre une ligne datée par mesure sur une carte SD ; et elle se pilote avec deux boutons, une LED d'état et une console série. Je laisse la parole à [Membre 3], qui va vous présenter le matériel. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«يضعنا الموضوع في دور شركة ناشئة كلّفتها AIVM، الوكالة الدولية لليقظة الجوية. تريد الوكالة تجهيز السفن بمحطات أرصاد لقياس العوامل التي تؤثر في تكوّن الأعاصير. وتوافق شركات الملاحة بشرط: أن تبقى المحطة بسيطة ويمكن لأحد أفراد الطاقم غير المتخصص تشغيلها. مهمّتنا إذن كانت تصميم محطة على STM32 تقيس وتختم بالوقت وتسجّل بياناتها بشكل موثوق، مع بقائها سهلة الاستعمال. عمليًا، تقيس حرارة الهواء والرطوبة والإضاءة والموقع، وتسجّل سطرًا مؤرَّخًا لكل قياس على بطاقة SD، وتُشغَّل بزرّين وضوء LED ووحدة تحكم تسلسلية. أترك الكلمة لـ[العضو 3] ليقدّم العتاد.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li><b>Faits :</b> AIVM ; cyclones ; contrainte de simplicité ; 4 grandeurs mesurées.</li><li><b>Justification :</b> chaque choix technique de la suite répond à « fiable » ou à « simple ».</li><li><b>Honnêteté :</b> prototype de laboratoire, pas testé en mer ; partage des données entre navires non réalisé.</li></ul>
+<h4>F. Liens</h4><p class="fr">« Mesurer » → diapositives 4, 5, 7 ; « Enregistrer » → 8 ; « Piloter » → 9, 11.</p>
+</div>
+
+<div class="slide" id="s9">
+<h3><span class="tag">Diapositive 9</span>Quatre modes, pilotés par deux boutons</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Un diagramme d'états : Mise sous tension → STANDARD (aucun bouton) ou CONFIGURATION (rouge maintenu au démarrage) ; CONFIGURATION → STANDARD (30 min sans commande) ; STANDARD ↔ MAINTENANCE (rouge 5 s, retour au mode précédent) ; STANDARD → ÉCONOMIQUE (vert 5 s) ; ÉCONOMIQUE → STANDARD (rouge 5 s). Une note « À noter ». Quatre cartes décrivant chaque mode avec sa couleur de LED.</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<div class="ar" lang="ar">
+<p>الأوضاع الأربعة مأخوذة من وثيقة «أوضاع التشغيل»:</p>
+<p><b>العادي (LED خضراء):</b> عند التشغيل دون ضغط أي زر. قياس كل LOG_INTERVAL (10 دقائق افتراضيًا) وكتابته على البطاقة.</p>
+<p><b>الإعداد (صفراء):</b> عند التشغيل مع إبقاء الزر الأحمر مضغوطًا. القياس متوقف، ونرسل أوامر من الحاسوب مثل <code>LOG_INTERVAL=10</code>، وتُحفظ في ذاكرة Flash. الأزرار مُهملة. بعد 30 دقيقة دون أي أمر تعود المحطة وحدها إلى الوضع العادي (أو بالأمر EXIT الذي أضفناه).</p>
+<p><b>الصيانة (برتقالية):</b> من الوضع العادي بضغط الأحمر 5 ثوانٍ. البطاقة تُفصل برمجيًا فيمكن إخراجها بأمان، ولا يُكتب شيء، والقياسات تظهر مباشرة على وحدة التحكم كل ثانيتين. ضغط الأحمر 5 ثوانٍ مرة أخرى يعيد إلى الوضع السابق.</p>
+<p><b>الاقتصادي (زرقاء):</b> من الوضع العادي بضغط الأخضر 5 ثوانٍ. المدة بين القياسات تتضاعف وGPS يُقرأ مرة كل قياسين لتوفير البطارية. الأحمر 5 ثوانٍ يعيد إلى العادي.</p>
+<p><b>ملاحظة مهمة:</b> الوثيقة تقول إن الصيانة متاحة أيضًا من الوضع الاقتصادي، لكنها تقول أيضًا إن الأحمر 5 ثوانٍ يعيد من الاقتصادي إلى العادي. نفس الحركة لا يمكن أن يكون لها نتيجتان، فاخترنا العودة إلى العادي (الثابت <code>ECO_ROUGE_VERS_MAINTENANCE</code> يسمح بالخيار الآخر). الزر «الأحمر» هو الزر الخارجي PC3، و«الأخضر» هو الزر الأزرق B1 على البطاقة.</p>
+</div>
+<h4>C. Explication technique</h4>
+<p class="fr">Le mode courant est une variable <code>mode_actuel</code>. Les changements passent tous par <code>changer_mode()</code>, appelée depuis la boucle principale quand un événement « appui long » est lu dans la file (<code>gerer_evenements()</code>). En entrant en maintenance, <code>changer_mode()</code> mémorise le mode précédent et démonte la carte SD. L'orange est obtenu par rouge + vert à 30 % (modulation logicielle dans le SysTick).</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« La station possède quatre modes, choisis avec seulement deux boutons, et chacun est reconnaissable à la couleur de la LED. À la mise sous tension, sans appuyer sur un bouton, la station démarre en mode standard, LED verte : elle mesure toutes les LOG_INTERVAL, dix minutes par défaut, et enregistre chaque ligne sur la carte SD. Si l'on démarre en maintenant le bouton rouge, elle entre en mode configuration, LED jaune : l'acquisition est arrêtée et l'on règle les paramètres depuis la console série ; après trente minutes sans commande, elle repasse seule en standard. Depuis le standard, un appui de cinq secondes sur le rouge mène au mode maintenance, LED orange : plus rien n'est écrit, la carte SD peut être retirée sans risque, et les mesures s'affichent en direct sur la console. Un nouvel appui de cinq secondes ramène au mode précédent. Enfin, cinq secondes sur le vert mènent au mode économique, LED bleue : l'intervalle est doublé et le GPS n'est lu qu'une mesure sur deux, pour économiser la batterie. Depuis ce mode, le rouge ramène en standard. Ces changements de mode reposent sur des interruptions : voyons comment. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«للمحطة أربعة أوضاع نختارها بزرّين فقط، وكل وضع يُعرف بلون الـLED. عند التشغيل دون ضغط أي زر، تبدأ المحطة في الوضع العادي باللون الأخضر: تقيس كل LOG_INTERVAL، أي عشر دقائق افتراضيًا، وتسجّل كل سطر على البطاقة. إذا شغّلناها مع إبقاء الزر الأحمر مضغوطًا تدخل وضع الإعداد باللون الأصفر: يتوقف القياس ونضبط الإعدادات من وحدة التحكم التسلسلية، وبعد ثلاثين دقيقة دون أمر تعود وحدها إلى العادي. من الوضع العادي، ضغط الأحمر خمس ثوانٍ يؤدي إلى وضع الصيانة باللون البرتقالي: لا يُكتب شيء، ويمكن إخراج البطاقة بأمان، وتظهر القياسات مباشرة على وحدة التحكم. ضغطة أخرى لخمس ثوانٍ تعيد إلى الوضع السابق. وأخيرًا، خمس ثوانٍ على الأخضر تؤدي إلى الوضع الاقتصادي باللون الأزرق: تتضاعف المدة ولا يُقرأ GPS إلا مرة كل قياسين لتوفير البطارية. ومن هذا الوضع يعيد الأحمر إلى العادي. تعتمد هذه التغييرات على المقاطعات: لنرَ كيف.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li><b>Faits :</b> couleurs (vert, jaune, orange, bleu) ; durées (5 s, 30 min) ; rouge = PC3 externe, vert = B1 (PC13) ; maintenance : affichage toutes les 2 s.</li><li><b>Mécanismes :</b> mémorisation du mode précédent ; démontage SD en maintenance, remontage à l'écriture suivante ; en configuration, boutons ignorés.</li><li><b>Justification :</b> choix ÉCO + rouge → STANDARD (ambiguïté du document) ; commande EXIT ajoutée pour ne pas attendre 30 min.</li></ul>
+<h4>F. Liens</h4><p class="fr">Détection de l'appui long → diapositive 10 ; LED → 11 ; paramètres réglés en configuration → 15 ; démonstration (14) : étapes 3 à 5.</p>
+</div>
+
+<div class="slide" id="s10">
+<h3><span class="tag">Diapositive 10</span>Les interruptions détectent, la boucle principale décide</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Un tableau de 4 sources d'interruption (SysTick 1 ms ; EXTI3 et EXTI15_10 ; USART2 RX ; USART3 RX) avec leur rôle ; trois principes (routines courtes, partage sûr, mesures périodiques sans timer dédié) ; un exemple en 5 étapes : l'appui long sur le bouton rouge.</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<div class="ar" lang="ar">
+<p><b>المقاطعة</b> إشارة توقف البرنامج الرئيسي لحظة قصيرة لتنفيذ روتين صغير ثم يعود. عندنا أربعة مصادر:</p>
+<p><b>SysTick</b> كل 1 ميلي ثانية: يقيس مدة الضغط على الأزرار (هل تجاوزت 5 ثوانٍ؟) ويحرّك الـLED (الألوان والوميض 1 هرتز). لذلك لا تتجمد الـLED حتى لو كان القياس بطيئًا.</p>
+<p><b>EXTI</b> للزرّين (PC3 وPC13): يُستدعى عند الضغط وعند الإفلات، مع إزالة الارتداد 20 ميلي ثانية، ويحفظ لحظة الضغط.</p>
+<p><b>USART2 RX</b>: كل بايت يصل من الحاسوب يُضاف إلى الأمر حتى الضغط على Entrée ثم يُرفع علم <code>cmd_prete</code>.</p>
+<p><b>USART3 RX</b>: كل بايت من GPS يُضاف إلى الرسالة؛ عند نهاية رسالة RMC تُحفظ مع لحظة وصولها.</p>
+<p><b>القاعدة الذهبية:</b> المقاطعة <b>تكتشف</b> فقط، والحلقة الرئيسية <b>تقرّر</b>. لا يتغيّر الوضع داخل مقاطعة أبدًا: المقاطعة تضع «حدثًا» في طابور (8 أماكن)، والحلقة الرئيسية تقرأه وتغيّر الوضع. المتغيرات المشتركة مُعلنة <code>volatile</code>، والنسخ تتم بعد تعطيل المقاطعات لحظيًا (<code>__disable_irq()</code>) لتجنّب قراءة بيانات نصف مكتوبة.</p>
+</div>
+<h4>C. Explication technique</h4>
+<p class="fr">Ce découpage évite les routines longues (accès SD ou I²C) dans une interruption, ce qui pourrait bloquer le système. Les priorités NVIC sont : boutons 5, UART 6 ; en cas de débordement UART, <code>HAL_UART_ErrorCallback</code> relance la réception. La périodicité des mesures n'utilise pas de timer matériel : la boucle compare <code>HAL_GetTick()</code> à l'instant prévu.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Pour réagir aux boutons, au GPS et à la console sans rien manquer, nous utilisons quatre sources d'interruption. Le SysTick, toutes les millisecondes, mesure la durée d'appui des boutons et anime la LED : ainsi, la LED n'est jamais bloquée, même pendant une mesure lente. Les interruptions EXTI des deux boutons se déclenchent à l'appui et au relâchement, avec un anti-rebond de vingt millisecondes. Les deux liaisons série reçoivent octet par octet : la console assemble une commande, et le GPS assemble une trame NMEA. Notre principe est simple : les interruptions détectent, mais c'est la boucle principale qui décide. Prenons l'exemple d'un appui long sur le bouton rouge : l'EXTI mémorise l'instant de l'appui ; le SysTick constate que cinq secondes se sont écoulées et dépose un événement dans une file ; puis la boucle principale lit cette file et change de mode, par exemple vers la maintenance. Que se passe-t-il maintenant quand quelque chose tourne mal ? »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«للتفاعل مع الأزرار وGPS ووحدة التحكم دون تفويت شيء نستعمل أربعة مصادر للمقاطعة. SysTick كل ميلي ثانية يقيس مدة ضغط الأزرار ويحرّك الـLED، لذلك لا تتجمّد الـLED أبدًا حتى أثناء قياس بطيء. مقاطعات EXTI للزرّين تنطلق عند الضغط وعند الإفلات مع إزالة الارتداد لمدة عشرين ميلي ثانية. الوصلتان التسلسليتان تستقبلان بايتًا بايتًا: وحدة التحكم تجمع أمرًا، وGPS يجمع رسالة NMEA. مبدؤنا بسيط: المقاطعات تكتشف، لكن الحلقة الرئيسية هي التي تقرّر. مثال: ضغطة طويلة على الزر الأحمر؛ EXTI تحفظ لحظة الضغط، وSysTick يلاحظ مرور خمس ثوانٍ فيضع حدثًا في طابور، ثم تقرأ الحلقة الرئيسية الطابور وتغيّر الوضع، مثلًا إلى الصيانة. فماذا يحدث الآن عندما يقع خلل؟»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li><b>Faits :</b> 4 sources ; 1 ms ; 20 ms d'anti-rebond ; file de 8 événements ; EV_LONG_ROUGE / EV_LONG_VERT.</li><li><b>Mécanismes :</b> pourquoi pas de changement de mode dans une interruption ; rôle de <code>volatile</code> et de <code>__disable_irq()</code>.</li><li><b>Distinction :</b> interruptions (boutons, UART, SysTick) ≠ polling (comparaison de <code>HAL_GetTick()</code>, lecture des capteurs).</li></ul>
+<h4>F. Liens</h4><p class="fr">Modes (9) ; GPS dans l'acquisition (7) ; LED d'erreur animée par le SysTick (11) ; console en configuration (15).</p>
+</div>
+
+<div class="slide" id="s11">
+<h3><span class="tag">Diapositive 11</span>Six erreurs détectées, signalées puis récupérées</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Un tableau des 6 erreurs par priorité (accès/écriture SD, carte pleine, horloge RTC, capteur, GPS, donnée incohérente), avec la détection, le signal LED (barres rouge + 2e couleur) et la réaction ; un encadré « Principe » ; un encadré « Limites ».</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<div class="ar" lang="ar">
+<p>لكل خطأ <b>شرط اكتشاف</b> و<b>رمز ضوئي</b> و<b>طريقة تعافٍ</b>. الرمز الضوئي: وميض بتردد 1 هرتز بين الأحمر ولون ثانٍ (أبيض للبطاقة، أزرق للساعة، أخضر للحساس وللبيانات غير المتناسقة، أصفر لـGPS). المدد متساوية (500+500 ميلي ثانية) أو بنسبة 1 إلى 2 (333 أحمر و667 للون الثاني) لتمييز خطأين بنفس اللون.</p>
+<p><b>الأولوية:</b> إذا وُجدت عدة أخطاء معًا تعرض الـLED الأعلى أولوية فقط (البطاقة أولًا). <b>التعافي:</b> الأخطاء يُعاد حسابها عند كل قياس، فإذا زال السبب يختفي الخطأ دون إعادة تشغيل. خطأ الحساس أو GPS لا يُعلن إلا بعد <b>فشل قياسين متتاليين</b> لتجنّب الإنذار الكاذب.</p>
+<p><b>الحدود (قلها بصراحة):</b> فشل التهيئة عند البداية يؤدي إلى توقف البرنامج (Error_Handler)، لا يوجد مؤقت حراسة watchdog، ولا تُسجَّل الأخطاء على البطاقة.</p>
+</div>
+<h4>C. Explication technique</h4>
+<p class="fr">Chaque erreur est un bit de la variable <code>erreurs</code> (fonction <code>erreur_set()</code>). Dans <code>led_tick()</code>, appelée chaque milliseconde, on cherche le premier bit actif (ordre de priorité) et on choisit la 2e couleur et le rapport de durée. Les codes couleur sont ceux du document « Modes de fonctionnement ». « Horloge non réglée » n'est pas une erreur RTC : la date vaut seulement NA.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Six situations d'erreur sont prévues, et chacune a son propre code lumineux : un clignotement à un hertz entre le rouge et une seconde couleur, avec des durées égales ou dans un rapport d'un pour deux. Par exemple, rouge et blanc pour la carte SD, rouge et bleu pour l'horloge, rouge et jaune pour le GPS. Chaque erreur a une condition de détection précise : un capteur n'est déclaré en erreur qu'après deux acquisitions consécutives en timeout, pour éviter les fausses alertes. Si plusieurs erreurs existent en même temps, la LED affiche la plus prioritaire. Surtout, les erreurs sont réévaluées à chaque acquisition : dès que la cause disparaît, la station reprend seule. Pour la carte SD, en cas d'échec, le programme la démonte et retente le montage à l'écriture suivante. Nous connaissons aussi nos limites : un échec à l'initialisation arrête le programme, et nous n'avons pas de chien de garde. Je laisse la parole à [Membre 4] pour le script de compilation et nos tests. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«هناك ست حالات خطأ، ولكل منها رمز ضوئي خاص: وميض بتردد هرتز واحد بين الأحمر ولون ثانٍ، بمدد متساوية أو بنسبة واحد إلى اثنين. مثلًا الأحمر والأبيض للبطاقة، والأحمر والأزرق للساعة، والأحمر والأصفر لـGPS. لكل خطأ شرط اكتشاف دقيق: لا يُعلن خطأ الحساس إلا بعد فشل قياسين متتاليين لتجنّب الإنذارات الكاذبة. إذا وُجدت عدة أخطاء في الوقت نفسه تعرض الـLED الأعلى أولوية. والأهم أن الأخطاء يُعاد تقييمها عند كل قياس: بمجرد زوال السبب تستأنف المحطة عملها وحدها. بالنسبة للبطاقة، عند الفشل يفصلها البرنامج ويحاول تركيبها من جديد عند الكتابة التالية. ونعرف أيضًا حدودنا: فشل التهيئة يوقف البرنامج، ولا يوجد مؤقت حراسة. أترك الكلمة لـ[العضو 4] للحديث عن سكربت الترجمة واختباراتنا.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li><b>Faits :</b> ordre de priorité ; couleurs ; 1 Hz ; 2 échecs ; seuils −10/60 °C.</li><li><b>Mécanismes :</b> bitmask + premier bit actif ; réévaluation à chaque acquisition ; démontage/remontage SD.</li><li><b>Justifications :</b> « 2 échecs » vient du document des modes ; priorité SD d'abord car c'est la perte de données [déduit].</li></ul>
+<h4>F. Liens</h4><p class="fr">TIMEOUT (7) ; SD (8) ; SysTick (10) ; « Erreurs provoquées » dans la démonstration (14).</p>
+</div>
+</section>
+
+<!-- ======================= MEMBRE 3 ======================= -->
+<section class="member" id="m3">
+<h2 class="nobreak">Membre 3 — diapositives 4, 5, 6 et 16</h2>
+<p class="fr">Vous présentez le matériel, les liaisons et l'organisation du programme, puis vous concluez la soutenance.</p>
+<p class="ar" lang="ar">تقدّم العتاد والوصلات وتنظيم البرنامج، ثم تختم العرض.</p>
+
+<div class="slide" id="s4">
+<h3><span class="tag">Diapositive 4</span>Un matériel centré sur la carte NUCLEO-L476RG</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Huit cartes : NUCLEO-L476RG (USB · ST-LINK), DHT11 (1 fil), BH1750 (I2C), Module GPS (UART), Module carte SD (SPI + FatFS), RTC interne, LED RGB (3 sorties GPIO), 2 boutons poussoirs (GPIO + interruptions). Une légende de couleurs (capteurs, stockage et temps, interface utilisateur) et une précision : bouton rouge = bouton externe, bouton vert = bouton bleu B1 de la carte.</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<div class="ar" lang="ar">
+<p><b>بطاقة NUCLEO-L476RG:</b> عليها المتحكم STM32L476RG (نواة Cortex-M4 بتردد 80 ميغاهرتز، 1 ميغابايت Flash و128 كيلوبايت RAM) ومبرمج <b>ST-LINK</b> مدمج. هذا المبرمج يُستعمل لرفع البرنامج ولتصحيحه، ويوفّر أيضًا منفذًا تسلسليًا افتراضيًا للحاسوب عبر نفس كابل USB.</p>
+<p><b>الحساسات (أزرق مخضر):</b> DHT11 للحرارة والرطوبة على سلك واحد؛ BH1750 للإضاءة على ناقل I²C؛ وحدة GPS للموقع والوقت عبر UART.</p>
+<p><b>التخزين والوقت (أزرق داكن):</b> بطاقة SD عبر SPI مع مكتبة FatFS؛ ساعة RTC داخلية في المتحكم نفسه، لا تحتاج قطعة خارجية.</p>
+<p><b>واجهة المستخدم (رمادي):</b> LED ثلاثية الألوان على 3 منافذ GPIO (ذات أنود مشترك، لذلك المنطق معكوس: 0 يشعل)، وزرّان: الأحمر خارجي على PC3 والأخضر هو الزر الأزرق B1 على البطاقة.</p>
+<p>كل هذا العتاد مذكور في الـcheat sheet الخاصة بالمشروع، ولم نضف عتادًا غير موثّق.</p>
+</div>
+<h4>C. Explication technique</h4>
+<p class="fr">Le matériel présenté est exactement celui de la cheat sheet. Points à savoir : le ST-LINK sert à la fois de programmateur (SWD) et de port série virtuel (USART2) ; la RTC est un périphérique interne ; la LED est à anode commune (constaté le 18/10/2026, logique inversée dans <code>rgb_led.h</code>) ; le STM32L476 n'a pas d'EEPROM, donc les paramètres vont en Flash.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Tout notre montage est centré sur la carte NUCLEO-L476RG. Elle porte le microcontrôleur STM32L476RG, un cœur Cortex-M4 cadencé à 80 mégahertz, et une sonde ST-LINK intégrée : avec un seul câble USB, elle sert à programmer la carte et à communiquer avec l'ordinateur. Trois éléments mesurent l'environnement : le DHT11 pour la température de l'air et l'humidité, le BH1750 pour la luminosité, et le module GPS pour la position et l'heure. La carte SD stocke les mesures, et la RTC, l'horloge interne du microcontrôleur, les date. Enfin, l'équipage interagit avec deux boutons poussoirs, et une LED de couleur indique l'état du système. Dans la suite, le bouton rouge désigne le bouton externe, et le bouton vert le bouton bleu de la carte. Voyons maintenant comment ces éléments sont reliés au microcontrôleur. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«كل تركيبنا متمحور حول بطاقة NUCLEO-L476RG. تحمل المتحكم STM32L476RG بنواة Cortex-M4 بتردد 80 ميغاهرتز، ومبرمج ST-LINK مدمج: بكابل USB واحد يُستعمل لبرمجة البطاقة وللتواصل مع الحاسوب. ثلاثة عناصر تقيس المحيط: DHT11 لحرارة الهواء والرطوبة، وBH1750 للإضاءة، ووحدة GPS للموقع والوقت. بطاقة SD تخزّن القياسات، وساعة RTC الداخلية في المتحكم تؤرّخها. وأخيرًا يتعامل الطاقم مع زرّين، وضوء LED ملوّن يبيّن حالة النظام. فيما يلي، الزر الأحمر هو الزر الخارجي، والأخضر هو الزر الأزرق على البطاقة. لنرَ الآن كيف ترتبط هذه العناصر بالمتحكم.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li><b>Faits :</b> 80 MHz (et non 80 Hz) ; 1 Mo Flash / 128 Ko RAM ; 8 éléments ; interfaces de chaque élément.</li><li><b>Mécanismes :</b> rôle double du ST-LINK ; RTC interne.</li><li><b>Justification :</b> carte imposée par le sujet ; composants = ceux de la cheat sheet.</li></ul>
+<h4>F. Liens</h4><p class="fr">Broches → diapositive 5 et 15 ; utilisation des capteurs → 7 ; SD → 8 ; LED et boutons → 9 et 11.</p>
+</div>
+
+<div class="slide" id="s5">
+<h3><span class="tag">Diapositive 5</span>Quatre types de liaison autour du STM32L476RG</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Au centre, le STM32L476RG (Cortex-M4, 80 MHz, 1 Mo Flash, 128 Ko RAM) avec trois blocs internes : RTC, Flash, NVIC. À gauche (entrées) : DHT11 (PB0, 1 fil), BH1750 (PB8/PB9, 0x23, I2C1), GPS (PC10/PC11, 9600 Bd, USART3), boutons (PC3, PC13, EXTI). À droite (sorties) : carte SD (PA5/PA6/PA7, CS PB6, SPI1), LED RGB (PA0/PA1/PA4, GPIO), PC console (ST-LINK, 115 200 Bd, USART2, flèche double). Mention « schéma fonctionnel, pas un schéma de câblage ».</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<div class="ar" lang="ar">
+<p>العنوان «أربعة أنواع من الوصلات»: سلك واحد (DHT11)، و<b>I²C</b> (BH1750)، و<b>UART</b> (GPS والحاسوب)، و<b>SPI</b> (بطاقة SD)، إضافة إلى منافذ GPIO البسيطة للـLED والأزرار.</p>
+<p><b>I²C:</b> سلكان، ساعة SCL على PB8 وبيانات SDA على PB9، والجهاز معرَّف بعنوانه 0x23. <b>UART:</b> بدون ساعة، كل طرف يرسل على TX ويستقبل على RX، والسرعة متفق عليها: 9600 لـGPS و115200 للحاسوب. <b>SPI:</b> أربعة أسلاك (ساعة SCK على PA5، MISO على PA6، MOSI على PA7، واختيار الشريحة CS على PB6)، وهو الأسرع، لذلك يناسب بطاقة SD. <b>سلك واحد (DHT11):</b> بروتوكول خاص يعتمد على مدة النبضات بالميكروثانية، والمنفذ PB0 يتحوّل بين مخرج ومدخل.</p>
+<p>داخل المتحكم: <b>RTC</b> تحفظ التاريخ والوقت وتُصحَّح بوقت GPS؛ <b>Flash</b> تحفظ الإعدادات (لا توجد EEPROM)؛ <b>NVIC</b> هو مدير المقاطعات.</p>
+<p>اليسار = ما يرسل معلومات إلى المتحكم (مداخل)، اليمين = ما يستقبل منه (مخارج)؛ الحاسوب في الاتجاهين لأنه يرسل الأوامر ويستقبل القياسات.</p>
+</div>
+<h4>C. Explication technique</h4>
+<p class="fr">Paramètres confirmés : I2C1 à 100 kHz (Timing <code>0x10D19CE4</code>) ; USART3 9600 bauds ; USART2 115 200 bauds ; SPI1 lent (≈ 312 kHz) pendant l'initialisation de la carte, puis 10 MHz. PA5 est aussi la LED verte LD2 de la carte : LD2 n'est donc pas utilisée. Seule la ligne TX du GPS vers RX du STM32 (PC11) est exploitée. La RTC tourne sur l'oscillateur interne LSI.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Chaque périphérique communique avec le microcontrôleur par sa propre liaison. À gauche, les entrées, c'est-à-dire ce qui envoie des informations au STM32. Le DHT11 utilise une seule broche, PB0, avec un protocole propriétaire chronométré à la microseconde. Le BH1750 est sur le bus I²C1 : deux fils, une horloge et une ligne de données, et le capteur est reconnu par son adresse, 0x23. Le GPS envoie ses trames sur l'UART3 à 9600 bauds, et les deux boutons déclenchent des interruptions. À droite, les sorties : la carte SD est sur le bus SPI1, plus rapide, géré par la bibliothèque FatFS ; la LED utilise trois sorties GPIO ; et l'ordinateur est relié par l'UART2 du ST-LINK à 115 200 bauds, dans les deux sens, pour la configuration et la maintenance. Dans le microcontrôleur, la RTC date les mesures, la Flash conserve les paramètres, et le NVIC gère les interruptions. Voyons maintenant comment le programme est organisé. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«كل طرف يتواصل مع المتحكم بوصلة خاصة به. على اليسار المداخل، أي ما يرسل المعلومات إلى STM32. يستعمل DHT11 منفذًا واحدًا هو PB0 ببروتوكول خاص يُقاس بالميكروثانية. BH1750 على ناقل I²C1: سلكان، ساعة وخط بيانات، ويُعرف الحساس بعنوانه 0x23. يرسل GPS رسائله على UART3 بسرعة 9600، والزرّان يطلقان مقاطعات. على اليمين المخارج: بطاقة SD على ناقل SPI1 الأسرع، تديره مكتبة FatFS؛ والـLED تستعمل ثلاثة منافذ GPIO؛ والحاسوب متصل عبر UART2 الخاص بـST-LINK بسرعة 115200 في الاتجاهين للإعداد والصيانة. داخل المتحكم، تؤرّخ RTC القياسات، وتحفظ Flash الإعدادات، ويدير NVIC المقاطعات. لنرَ الآن كيف نُظِّم البرنامج.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li><b>Faits :</b> toutes les broches du schéma ; vitesses ; adresse 0x23 ; un seul bus I²C.</li><li><b>Mécanismes :</b> synchrone (I²C, SPI : horloge partagée) vs asynchrone (UART : baud rate convenu) ; adresse I²C ; rôle du CS en SPI.</li><li><b>Justification :</b> chaque interface est imposée par le composant (cheat sheet) ; SPI pour la SD car c'est l'interface du module et elle est rapide.</li></ul>
+<h4>F. Liens</h4><p class="fr">Interruptions (10) ; acquisition (7) ; SD (8) ; tableau complet des broches (15).</p>
+</div>
+
+<div class="slide" id="s6">
+<h3><span class="tag">Diapositive 6</span>Un firmware en couches, piloté par une boucle principale</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">À gauche, 5 couches : Application <code>station.c</code> ; Démarrage <code>main.c</code> ; Pilotes (<code>dht11.c</code>, <code>bh1750.c</code>, <code>rgb_led.c</code>) ; Middleware FatFS (+ <code>user_diskio.c</code>) ; HAL STM32L4 + CMSIS. Outils : C, HAL, CMake + Ninja + arm-none-eabi-gcc. À droite, un organigramme : mise sous tension → HAL_Init, horloge 80 MHz, initialisations → « B1 maintenu ? » oui → diagnostic matériel ; non → <code>Station_Init()</code> → <code>while(1)</code> → <code>Station_Loop()</code> (boucle infinie).</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<div class="ar" lang="ar">
+<p><b>البرنامج مبني على طبقات</b> مثل عمارة: كل طبقة تستعمل التي تحتها فقط. في الأسفل <b>HAL وCMSIS</b>: كود جاهز من ST يولّده STM32CubeMX للتحكم في عتاد المتحكم. فوقه <b>FatFS</b>: مكتبة نظام الملفات، مع الملف <code>user_diskio.c</code> الذي يربطها ببطاقة SD عبر SPI. ثم <b>برامج تشغيل المكوّنات</b> (drivers) التي كتبناها لكل حساس وللـLED. ثم <b>main.c</b> للتشغيل والتشخيص، وفي الأعلى <b>station.c</b> الذي يحتوي منطق المحطة كله: الأوضاع والقياس والبطاقة والإعدادات والأخطاء.</p>
+<p><b>عند التشغيل:</b> تهيئة HAL وضبط الساعة على 80 ميغاهرتز وتهيئة الأطراف. إذا كان الزر B1 مضغوطًا يُشغَّل <b>تشخيص العتاد</b> (ليس وضعًا خامسًا بل أداة اختبار). وإلا تُحمَّل الإعدادات من Flash ويُختار الوضع الأولي (الإعداد إذا كان الأحمر مضغوطًا، وإلا العادي). ثم <b>حلقة لا نهائية</b> تنادي <code>Station_Loop()</code>: تعالج أحداث الأزرار ثم تنفّذ عمل الوضع الحالي.</p>
+<p>الأدوات: لغة C، وCMake لوصف المشروع، وNinja للبناء، وarm-none-eabi-gcc كمترجم لمعالجات ARM.</p>
+</div>
+<h4>C. Explication technique</h4>
+<p class="fr">L'organisation en couches sépare le matériel (HAL) de la logique (station.c) : on peut changer un pilote sans réécrire l'application. Traitement du mode courant : CONFIGURATION → commandes série ; STANDARD et ÉCONOMIQUE → acquisition puis écriture SD ; MAINTENANCE → affichage série. L'USART2 est initialisé à la main (<code>USART2_Init_Manuel</code>) car CubeMX ne l'avait pas généré. Horloge : HSI 16 MHz → PLL ×10 ÷ 2 = 80 MHz.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Notre programme est écrit en C et organisé en couches. En bas, la couche HAL et CMSIS, générée par STM32CubeMX, qui pilote directement le matériel du microcontrôleur. Au-dessus, la bibliothèque FatFS gère le système de fichiers de la carte SD. Ensuite viennent les pilotes que nous avons écrits pour le DHT11, le BH1750 et la LED. Main.c s'occupe du démarrage, et station.c contient toute la logique de la station : modes, acquisition, carte SD, configuration et erreurs. À droite, vous voyez le démarrage : on règle l'horloge à 80 mégahertz et on initialise les périphériques. Si le bouton bleu B1 est maintenu, la carte lance un diagnostic du matériel. Sinon, Station_Init charge les paramètres depuis la Flash, prépare les boutons et les liaisons série, puis choisit le mode de départ. Ensuite, le programme tourne dans une boucle infinie qui traite les événements des boutons, puis exécute le travail du mode courant. Je laisse la parole à [Membre 1], qui va vous montrer comment une mesure est réalisée. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«برنامجنا مكتوب بلغة C ومنظّم في طبقات. في الأسفل طبقة HAL وCMSIS التي يولّدها STM32CubeMX وتتحكم مباشرة في عتاد المتحكم. فوقها مكتبة FatFS التي تدير نظام ملفات بطاقة SD. ثم برامج التشغيل التي كتبناها لـDHT11 وBH1750 والـLED. يهتم main.c بالتشغيل، ويحتوي station.c منطق المحطة كله: الأوضاع والقياس والبطاقة والإعدادات والأخطاء. على اليمين ترون مراحل التشغيل: نضبط الساعة على 80 ميغاهرتز ونهيّئ الأطراف. إذا كان الزر الأزرق B1 مضغوطًا تطلق البطاقة تشخيصًا للعتاد. وإلا تحمّل Station_Init الإعدادات من Flash وتجهّز الأزرار والوصلات التسلسلية ثم تختار وضع البداية. بعد ذلك يدور البرنامج في حلقة لا نهائية تعالج أحداث الأزرار ثم تنفّذ عمل الوضع الحالي. أترك الكلمة لـ[العضو 1] ليبيّن لكم كيف يُنجز القياس.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li><b>Faits :</b> 5 couches ; noms des fichiers ; B1 au reset = diagnostic ; rouge au démarrage = configuration.</li><li><b>Mécanismes :</b> boucle infinie sans système d'exploitation ; ce que fait chaque mode dans la boucle.</li><li><b>Justification :</b> couches = séparation matériel / logique, code plus lisible et testable [déduit].</li></ul>
+<h4>F. Liens</h4><p class="fr">Interruptions qui tournent « en parallèle » (10) ; acquisition (7) ; diagnostic (13) ; script de compilation (12).</p>
+</div>
+
+<div class="slide" id="s16">
+<h3><span class="tag">Diapositive 16</span>Conclusion</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Quatre cartes : Objectif (mesurer la météo à bord d'un navire ; rester simple, pilotable par l'équipage), Solution réalisée (programme en C sur NUCLEO-L476RG ; capteurs, RTC, carte SD, LED et console série), Fonctionnalités (4 modes, 2 boutons ; 6 erreurs signalées par la LED ; une ligne horodatée par mesure sur SD ; script compiler puis téléverser), Intérêt maritime (station autonome, sans PC à bord ; état lisible d'un coup d'œil ; carte SD retirable sans risque). « Merci pour votre attention ! » et « Nous sommes maintenant à votre disposition pour vos questions. »</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<p class="ar" lang="ar">الخاتمة تجيب عن أربعة أسئلة: ماذا أردنا؟ (محطة أرصاد على سفينة سهلة التشغيل). ماذا صنعنا؟ (برنامج C على STM32 مع حساسات وساعة وبطاقة SD وLED ووحدة تحكم). ماذا يعمل فعلًا؟ (أربعة أوضاع بزرّين، ستة أخطاء بإشارات ضوئية، سطر مؤرَّخ لكل قياس، وسكربت ترجمة ورفع). لماذا هو مفيد في البحر؟ (يعمل وحده دون حاسوب، حالته تُقرأ بنظرة واحدة إلى الـLED، والبطاقة تُنزع بأمان في وضع الصيانة). لا تضف نتائج اختبارات غير موثّقة.</p>
+<h4>C. Explication technique</h4>
+<p class="fr">« Autonome » : en mode standard, la station mesure et enregistre seule, la console n'est nécessaire que pour configurer. « Lisible d'un coup d'œil » : couleur = mode, clignotement = erreur. « Retirable sans risque » : la maintenance démonte la carte avant retrait, et chaque ligne est fermée après écriture.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Pour conclure, notre objectif était de concevoir une station météorologique embarquée, simple à piloter par un membre d'équipage. Nous avons réalisé un programme en C sur la carte NUCLEO-L476RG, qui mesure la température de l'air, l'humidité, la luminosité et la position GPS, date chaque mesure et l'enregistre sur une carte SD. La station fonctionne selon quatre modes pilotés par deux boutons, elle signale six types d'erreurs grâce à sa LED, elle se configure par la liaison série, et un script automatise la compilation et le téléversement. Pour un bateau, cela donne une station autonome, qui n'a pas besoin d'ordinateur à bord, dont l'état se lit d'un coup d'œil, et dont les données se récupèrent sans risque grâce à la carte SD. Merci pour votre attention ! Nous sommes maintenant à votre disposition pour vos questions. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«في الختام، كان هدفنا تصميم محطة أرصاد جوية مدمجة يسهل على أحد أفراد الطاقم تشغيلها. أنجزنا برنامجًا بلغة C على بطاقة NUCLEO-L476RG يقيس حرارة الهواء والرطوبة والإضاءة والموقع، ويؤرّخ كل قياس ويسجّله على بطاقة SD. تعمل المحطة بأربعة أوضاع يتحكم فيها زرّان، وتشير إلى ستة أنواع من الأخطاء عبر الـLED، وتُضبط عبر الوصلة التسلسلية، ويقوم سكربت بأتمتة الترجمة والرفع. بالنسبة للسفينة، هذا يعني محطة مستقلة لا تحتاج حاسوبًا على متنها، تُقرأ حالتها بنظرة، وتُسترجع بياناتها بأمان بفضل بطاقة SD. شكرًا لانتباهكم! نحن الآن تحت تصرفكم للإجابة عن أسئلتكم.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li>Les 4 idées (objectif, solution, fonctionnalités, intérêt maritime).</li><li>Ne rien affirmer sur des tests en mer ou des durées d'essai : non documentés.</li><li>Si on vous demande les limites : pas de capteur supplémentaire dans notre matériel, pas de mise en veille du processeur, RTC sur oscillateur interne, prototype alimenté en USB.</li></ul>
+<h4>F. Liens</h4><p class="fr">La conclusion résume toute la présentation : soyez prêt·e à renvoyer vers les diapositives 7, 8, 9 et 11 si une question arrive.</p>
+</div>
+</section>
+
+<!-- ======================= MEMBRE 4 ======================= -->
+<section class="member" id="m4">
+<h2 class="nobreak">Membre 4 — diapositives 12, 13, 14 et 15</h2>
+<p class="fr">Vous présentez l'outillage (compilation, téléversement), la validation, le scénario de démonstration et la synthèse technique (broches et paramètres).</p>
+<p class="ar" lang="ar">تقدّم أدوات الترجمة والرفع، والتحقق، وسيناريو العرض العملي، والملخص التقني (المنافذ والإعدادات).</p>
+
+<div class="slide" id="s12">
+<h3><span class="tag">Diapositive 12</span>Un script : compiler, vérifier, puis téléverser</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Un bloc de code Bash de 5 lignes, l'explication de chaque ligne, un petit organigramme Compiler → Succès ? → oui : Téléverser / non : Arrêt + message, et trois bénéfices.</p>
+<pre>#!/usr/bin/env bash
+cd "$(dirname "$0")/.." || exit 1
+if cmake --preset Debug &amp;&amp; cmake --build build/Debug; then
+  STM32_Programmer_CLI -c port=SWD mode=UR reset=HWrst -w build/Debug/Aura.elf -v -rst
+else echo "Échec de compilation : téléversement annulé" &gt;&amp;2; exit 1; fi</pre>
+<div class="warn fr"><b>Attention :</b> l'étiquette de la diapositive indique <code>compiler_televerser.sh</code>, mais ces 5 lignes sont le contenu exact de <code>scripts/compiler_televerser_court.sh</code>. Le script complet <code>compiler_televerser.sh</code> fait la même chose en plus détaillé (numéro de build, mode release, recherche automatique de STM32_Programmer_CLI, moniteur série). Si on vous pose la question, dites-le simplement.</div>
+<h4>B. Ce que vous devez comprendre</h4>
+<div class="ar" lang="ar">
+<p><b>الترجمة (compilation)</b> تحوّل كود C إلى ملف تنفيذي <code>Aura.elf</code>. <b>الرفع (téléversement/flashage)</b> يكتب هذا الملف في ذاكرة Flash للمتحكم.</p>
+<p>السطر 1: تشغيل السكربت بـBash. السطر 2: الانتقال إلى مجلد المشروع مهما كان مكان التشغيل. السطر 3: <code>cmake --preset Debug</code> يجهّز المشروع (Ninja والمترجم arm-none-eabi-gcc)، ثم <code>cmake --build</code> يترجم. كلمة <code>if</code> تختبر نجاح الأمرين (رمز الخروج 0). السطر 4: فقط عند النجاح، يكتب <code>STM32_Programmer_CLI</code> الملف عبر ST-LINK بواجهة SWD، ثم يتحقق (‎-v) ويعيد تشغيل البطاقة (‎-rst). السطر 5: وإلا رسالة خطأ ورمز خروج 1، والبطاقة لا تُلمس.</p>
+<p><b>الفائدة:</b> أمر واحد بدل ثلاث عمليات، ولا نرفع أبدًا برنامجًا قديمًا بعد ترجمة فاشلة، ونفس الإجراء على كل حاسوب.</p>
+</div>
+<h4>C. Explication technique</h4>
+<p class="fr">Le principe demandé est : compilation → vérification du résultat → téléversement seulement si la compilation réussit. Le <code>&amp;&amp;</code> n'exécute la compilation que si la configuration a réussi ; le <code>if</code> teste le code de retour. Options : <code>-c port=SWD mode=UR reset=HWrst</code> (connexion SWD sous reset matériel), <code>-w</code> écriture, <code>-v</code> vérification, <code>-rst</code> redémarrage. La version courte suppose que les outils sont dans le PATH. À vérifier sur le poste de démonstration avant la soutenance.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Pour compiler et téléverser le programme, nous utilisons un script Bash. La ligne 2 place le script à la racine du projet, d'où qu'on le lance. La ligne 3 configure le projet avec CMake, puis le compile avec la chaîne arm-none-eabi-gcc ; le "if" teste si ces deux commandes ont réussi. La ligne 4 n'est exécutée qu'en cas de succès : STM32_Programmer_CLI écrit le fichier Aura.elf dans la Flash du microcontrôleur à travers le ST-LINK, vérifie l'écriture, puis redémarre la carte. Sinon, à la ligne 5, le script affiche un message d'erreur et s'arrête avec le code 1 : la carte n'est pas touchée. Le principe est donc : compiler, vérifier le résultat, et téléverser seulement si tout a réussi. Cela évite de flasher un ancien programme par erreur, et la procédure est la même sur chaque poste. Voyons maintenant comment nous avons testé la station. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«لترجمة البرنامج ورفعه نستعمل سكربت Bash. السطر 2 يضع السكربت في جذر المشروع من أي مكان شُغّل منه. السطر 3 يجهّز المشروع بـCMake ثم يترجمه بسلسلة arm-none-eabi-gcc، وكلمة "if" تختبر نجاح الأمرين. السطر 4 لا يُنفّذ إلا عند النجاح: يكتب STM32_Programmer_CLI الملف Aura.elf في ذاكرة Flash عبر ST-LINK، ويتحقق من الكتابة، ثم يعيد تشغيل البطاقة. وإلا ففي السطر 5 يعرض السكربت رسالة خطأ ويتوقف برمز 1، ولا تُلمس البطاقة. المبدأ إذن: نترجم، نتحقق من النتيجة، ولا نرفع إلا إذا نجح كل شيء. هذا يمنع رفع برنامج قديم خطأً، والإجراء نفسه على كل حاسوب. لنرَ الآن كيف اختبرنا المحطة.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li><b>Faits :</b> CMake + Ninja + arm-none-eabi-gcc ; STM32_Programmer_CLI ; SWD ; Aura.elf ; preset Debug.</li><li><b>Mécanismes :</b> code de retour 0 = succès ; <code>&amp;&amp;</code> ; <code>if/else</code>.</li><li><b>Différence :</b> compiler ≠ téléverser ≠ déboguer.</li></ul>
+<h4>F. Liens</h4><p class="fr">Couches logicielles (6) ; « Compilation OK » (13) ; étape 1 de la démonstration (14).</p>
+</div>
+
+<div class="slide" id="s13">
+<h3><span class="tag">Diapositive 13</span>Une validation progressive</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">« Démarche de test » en 4 points : tests unitaires (chaque composant seul, suivi sur le moniteur série) ; diagnostic intégré (B1 maintenu au reset : test de chaque composant, puis bilan) ; intégration (LOG_INTERVAL=20S pour accélérer les cycles, suivi sur la console) ; contrôle des fichiers (lecture sur PC). Trois indicateurs : Compilation OK (sans erreur, le 23/10/2026) ; ≈ 72 Ko (Flash : 7 % de 1 Mo, build Debug) ; ≈ 4,8 Ko (RAM : 5 % de 96 Ko, build Debug).</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<div class="ar" lang="ar">
+<p>اختبرنا المحطة <b>تدريجيًا</b>: أولًا كل مكوّن وحده (اختبار وحدة) مع متابعة النتائج على الشاشة التسلسلية، كما في الـcheat sheet. ثم <b>تشخيص مدمج</b>: إذا شغّلنا البطاقة والزر B1 مضغوط، يختبر البرنامج الـLED والأزرار وDHT11 وBH1750 والساعة والبطاقة وGPS، ويعطي لكل اختبار نتيجة: ناجح، فاشل، أو «يُتحقق بالعين» (للـLED). ثم <b>اختبار التكامل</b>: النظام كاملًا مع فاصل 20 ثانية بدل 10 دقائق لنرى عدة قياسات بسرعة. وأخيرًا <b>فحص الملفات</b> على الحاسوب (مثل ملف الشريحة 8).</p>
+<p><b>الأرقام:</b> الترجمة نجحت دون أخطاء بتاريخ 23/10/2026؛ البرنامج يشغل نحو 72 كيلوبايت من Flash (7٪ من 1 ميغابايت) ونحو 4.8 كيلوبايت من RAM (5٪ من 96 كيلوبايت المستعملة في الربط). هذا يعني أن هناك مساحة كبيرة متبقية.</p>
+<p><b>تنبيه:</b> لا يوجد تقرير اختبارات بأرقام (مدة التشغيل، عدد الأسطر…). لا تخترع نتائج؛ قل ما هو موثّق فقط.</p>
+</div>
+<h4>C. Explication technique</h4>
+<p class="fr">Le diagnostic est la fonction <code>Test_Materiel()</code> de <code>main.c</code>. Chiffres mémoire : sortie de l'éditeur de liens du build Debug (Flash : code + données initialisées ≈ 73 Ko ; RAM : 4 936 octets). Pourquoi « 96 Ko » alors que le STM32 a 128 Ko : le script de lien utilise la zone principale de 96 Ko (les 32 Ko restants sont une seconde zone, SRAM2) [à préciser si on vous le demande : c'est le découpage mémoire du STM32L476].</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Nous avons validé la station progressivement. D'abord, nous avons testé chaque composant séparément, en suivant les résultats sur le moniteur série. Ensuite, nous avons intégré un diagnostic au démarrage : si l'on maintient le bouton B1 au reset, la carte teste la LED, les boutons, le DHT11, le BH1750, l'horloge, la carte SD et le GPS, puis affiche un bilan. Pour tester le système complet, nous réduisons l'intervalle de mesure à vingt secondes avec la commande LOG_INTERVAL=20S, ce qui permet de voir plusieurs cycles rapidement. Enfin, nous relisons sur un ordinateur les fichiers enregistrés sur la carte SD, comme celui que nous vous avons montré. Le programme compile sans erreur, et il occupe environ 7 % de la mémoire Flash et 5 % de la RAM. Place maintenant au scénario de la démonstration. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«تحققنا من المحطة تدريجيًا. أولًا اختبرنا كل مكوّن على حدة مع متابعة النتائج على الشاشة التسلسلية. ثم أدمجنا تشخيصًا عند التشغيل: إذا أبقينا الزر B1 مضغوطًا أثناء إعادة التشغيل، تختبر البطاقة الـLED والأزرار وDHT11 وBH1750 والساعة وبطاقة SD وGPS، ثم تعرض حصيلة. لاختبار النظام كاملًا نخفّض فاصل القياس إلى عشرين ثانية بالأمر LOG_INTERVAL=20S، فنرى عدة دورات بسرعة. وأخيرًا نقرأ على الحاسوب الملفات المسجّلة على بطاقة SD، مثل الملف الذي عرضناه. البرنامج يُترجم دون أخطاء ويشغل نحو 7٪ من ذاكرة Flash و5٪ من RAM. ننتقل الآن إلى سيناريو العرض العملي.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li><b>Faits :</b> 4 niveaux de test ; B1 au reset ; LOG_INTERVAL=20S ; 23/10/2026 ; 7 % / 5 %.</li><li><b>Mécanisme :</b> le diagnostic n'est pas un mode, c'est un test au démarrage.</li><li><b>Honnêteté :</b> pas de rapport de test chiffré ; ajoutez vos propres résultats si vous en avez.</li></ul>
+<h4>F. Liens</h4><p class="fr">Démarrage (6) ; fichiers SD (8) ; démonstration (14).</p>
+</div>
+
+<div class="slide" id="s14">
+<h3><span class="tag">Diapositive 14</span>Démonstration : sept étapes</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Sept étapes avec une durée chacune : 1 Script (2 min) ; 2 Diagnostic (3 min) ; 3 Configuration (3 min : démarrage rouge maintenu, VERSION, LOG_INTERVAL=20S, CLOCK, DATE) ; 4 Standard (3 min : LED verte, mesures sur la console, ligne écrite sur la SD) ; 5 Éco et maintenance (4 min : LED bleue puis orange, retrait de la carte en sécurité) ; 6 Erreurs provoquées (3 min : capteur débranché, carte retirée, signal LED puis reprise) ; 7 Fichier .LOG (2 min). Un bandeau : chaque mode et transition, signalisation des erreurs, reprise automatique, enregistrement sur SD.</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<p class="ar" lang="ar">هذه الشريحة تعلن ما سيراه الأساتذة في العرض العملي وبأي ترتيب. كل مرحلة تُثبت شيئًا شرحناه: السكربت (الشريحة 12)، التشخيص (13)، وضع الإعداد والأوامر (9 و15)، الوضع العادي والتسجيل (7 و8)، الوضعان الاقتصادي والصيانة وإخراج البطاقة (9)، الأخطاء والتعافي (11)، وقراءة الملف على الحاسوب (8). <b>نصائح عملية:</b> في الداخل غالبًا لا يوجد موقع GPS فيُكتب NA وهذا ليس خطأ؛ لإظهار خطأ GPS افصلوا سلك TX للوحدة؛ خطأ الحساس لا يظهر إلا بعد قياسين فاشلين، لذلك نستعمل 20 ثانية؛ اضبطوا الساعة بـCLOCK وDATE إذا لم يكن هناك GPS. وتذكّروا رفع البرنامج الجديد (FILE_MAX_SIZE = 2048) قبل العرض.</p>
+<h4>C. Explication technique</h4>
+<p class="fr">À préparer : carte SD formatée en FAT32 ; terminal série à 115 200 bauds sur le port du ST-LINK ; programme re-téléversé (valeur FILE_MAX_SIZE = 2048) ; script testé sur le poste. Avec LOG_INTERVAL=20S et des fichiers de 2 Ko, une archive <code>_1</code> apparaît après une quinzaine de minutes environ (≈ 40 lignes de ~50 octets) : cela peut servir à montrer l'archivage.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« La démonstration suivra ce scénario en sept étapes. Nous compilerons et téléverserons le programme avec le script, puis nous lancerons le diagnostic du matériel. Nous démarrerons ensuite en mode configuration pour afficher la version et régler un intervalle court de vingt secondes, ainsi que l'heure et la date. Nous passerons en mode standard, où vous verrez les mesures s'afficher et s'enregistrer, puis par les modes économique et maintenance, en retirant la carte SD en toute sécurité. Nous provoquerons ensuite des erreurs, en débranchant un capteur et en retirant la carte, pour vous montrer le signal de la LED puis la reprise automatique. Enfin, nous ouvrirons sur l'ordinateur le fichier enregistré. Avant cela, voici un récapitulatif technique du brochage et des paramètres. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«سيتّبع العرض العملي هذا السيناريو في سبع مراحل. سنترجم البرنامج ونرفعه بالسكربت، ثم نطلق تشخيص العتاد. بعد ذلك نبدأ في وضع الإعداد لعرض رقم الإصدار وضبط فاصل قصير من عشرين ثانية، وكذلك الوقت والتاريخ. ننتقل إلى الوضع العادي حيث سترون القياسات تُعرض وتُسجَّل، ثم إلى الوضعين الاقتصادي والصيانة مع إخراج بطاقة SD بأمان. ثم نفتعل أخطاء بفصل حساس وإخراج البطاقة لنريكم إشارة الـLED ثم التعافي التلقائي. وأخيرًا نفتح الملف المسجَّل على الحاسوب. قبل ذلك، إليكم ملخصًا تقنيًا للمنافذ والإعدادات.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li>L'ordre des 7 étapes et ce que chacune prouve.</li><li>Les commandes : <code>VERSION</code>, <code>LOG_INTERVAL=20S</code>, <code>CLOCK=HH:MM:SS</code>, <code>DATE=MM,JJ,AAAA</code>, <code>PARAMS</code>, <code>EXIT</code>.</li><li>GPS en intérieur : NA n'est pas une erreur.</li></ul>
+<h4>F. Liens</h4><p class="fr">Résume les diapositives 7 à 13 ; la diapositive 15 sert de référence pendant la démonstration.</p>
+</div>
+
+<div class="slide" id="s15">
+<h3><span class="tag">Diapositive 15</span>Brochage et paramètres de configuration</h3>
+<h4>A. Ce que contient la diapositive</h4>
+<p class="fr">Tableau des broches : LED RGB PA0·PA1·PA4 (GPIO) ; bouton rouge PC3 (EXTI3, pull-up) ; bouton vert B1 PC13 (EXTI15_10) ; DHT11 PB0 (GPIO bidirectionnel) ; BH1750 PB8 SCL · PB9 SDA (I2C1, 100 kHz) ; carte SD PA5·PA6·PA7·CS PB6 (SPI1 + FatFS) ; GPS PC10 TX · PC11 RX (USART3, 9600 Bd) ; console PA2·PA3 (USART2, 115 200 Bd). Tableau des paramètres : LOG_INTERVAL 10 min (1–1440 min ou 5–86400S) ; FILE_MAX_SIZE 2 Ko (2 048 o) (256–4 194 304 o) ; TIMEOUT 30 s (1–300 s) ; LUMIN / LOW / HIGH 1 / 255 / 768 ; TEMP_AIR / MIN / MAX 1 / −10 / 60 °C ; HYGR / MINT / MAXT 1 / 0 / 50 °C ; GPS 1 (marche). Autres commandes : CLOCK, DATE, DAY, RESET, VERSION, PARAMS, EXIT.</p>
+<h4>B. Ce que vous devez comprendre</h4>
+<div class="ar" lang="ar">
+<p>هذه الشريحة <b>مرجع تقني</b> يجمع كل المنافذ والإعدادات المؤكَّدة (من الـcheat sheet وملف CubeMX والكود).</p>
+<p><b>الإعدادات</b> تُضبط في وضع الإعداد بأوامر من الشكل <code>NOM=valeur</code> وتُحفظ في ذاكرة Flash فتبقى بعد إطفاء البطاقة:</p>
+<p>• <b>LOG_INTERVAL</b>: المدة بين قياسين (10 دقائق؛ يمكن كتابتها بالثواني مع S). • <b>FILE_MAX_SIZE</b>: الحجم الأقصى لملف السجل قبل أرشفته (2 كيلوبايت). • <b>TIMEOUT</b>: أقصى مدة انتظار لحساس قبل كتابة NA (30 ثانية). • <b>LUMIN</b>: تفعيل حساس الإضاءة (1) أو تعطيله (0)، و<b>LUMIN_LOW/HIGH</b> حدّا تصنيف الإضاءة ضعيفة/قوية. • <b>TEMP_AIR</b>: تفعيل الحرارة، و<b>MIN/MAX_TEMP_AIR</b> حدود الحرارة المقبولة، خارجها خطأ «بيانات غير متناسقة». • <b>HYGR</b>: تفعيل الرطوبة، و<b>HYGR_MINT/MAXT</b> مجال الحرارة الذي تُقبل فيه الرطوبة. • <b>GPS</b>: تشغيل أو إيقاف GPS (أضفناه).</p>
+<p>الأوامر الأخرى: CLOCK وDATE وDAY لضبط الوقت، RESET للعودة إلى القيم الافتراضية، VERSION لعرض الإصدار ورقم الدفعة، PARAMS لعرض الإعدادات، EXIT للخروج من وضع الإعداد.</p>
+</div>
+<h4>C. Explication technique</h4>
+<p class="fr">Les valeurs par défaut et les plages viennent du code (<code>PARAM_DEFAUT</code> et tableau <code>PARAMS</code> de <code>station.c</code>) et correspondent au document « Modes de fonctionnement » (10 min, 2 Ko, 30 s, 255/768, −10/60, 0/50). Les paramètres sont protégés en Flash par un mot magique et une somme de contrôle : si la zone est invalide, les valeurs par défaut sont utilisées. Ajouts de l'équipe : <code>GPS</code>, <code>PARAMS</code>, <code>EXIT</code>, et la saisie en secondes de LOG_INTERVAL.</p>
+<h4>D. Script oral</h4>
+<div class="script fr"><div class="lab">SCRIPT — FRANÇAIS</div>
+<p>« Cette diapositive récapitule le brochage et les paramètres de la station. À gauche, pour chaque composant, ses broches sur le STM32 et le périphérique utilisé : par exemple, le BH1750 sur PB8 et PB9 en I²C, la carte SD sur le SPI1 avec PB6 comme sélection, et le GPS sur l'UART3 à 9600 bauds. À droite, les paramètres que l'on règle en mode configuration, avec leur valeur par défaut et leur plage : une mesure toutes les dix minutes, des fichiers de 2 kilo-octets au maximum avant archivage, un TIMEOUT de trente secondes, ainsi que les seuils de luminosité, de température et d'humidité. Ces paramètres sont sauvegardés dans la mémoire Flash, donc ils sont conservés même après un redémarrage. Je laisse la parole à [Membre 3] pour la conclusion. »</p></div>
+<div class="script ar" lang="ar"><div class="lab">الترجمة — العربية</div>
+<p>«تلخّص هذه الشريحة منافذ المحطة وإعداداتها. على اليسار، لكل مكوّن منافذه على STM32 والطرف المستعمل: مثلًا BH1750 على PB8 وPB9 عبر I²C، وبطاقة SD على SPI1 مع PB6 للاختيار، وGPS على UART3 بسرعة 9600. على اليمين، الإعدادات التي نضبطها في وضع الإعداد مع قيمتها الافتراضية ومجالها: قياس كل عشر دقائق، ملفات بحجم أقصى 2 كيلوبايت قبل الأرشفة، مهلة ثلاثين ثانية، إضافة إلى حدود الإضاءة والحرارة والرطوبة. تُحفظ هذه الإعدادات في ذاكرة Flash فتبقى حتى بعد إعادة التشغيل. أترك الكلمة لـ[العضو 3] للخاتمة.»</p></div>
+<h4>E. Points à maîtriser</h4>
+<ul class="fr"><li><b>Faits :</b> les 8 lignes du brochage ; les défauts (10 min, 2 Ko, 30 s, 255/768, −10/60 °C, 0/50 °C).</li><li><b>Mécanismes :</b> syntaxe <code>NOM=valeur</code> ; sauvegarde Flash ; RESET.</li><li><b>Attention :</b> le programme doit être re-téléversé pour que la carte utilise bien 2 048 octets.</li></ul>
+<h4>F. Liens</h4><p class="fr">Liaisons (5) ; mode configuration (9) ; FILE_MAX_SIZE et archivage (8) ; seuils et erreurs (7, 11).</p>
+</div>
+</section>
+
+<div class="part">PARTIE 3</div>
+<h2 id="partie3" class="nobreak">Questions probables des enseignants</h2>
+<p class="fr">Questions de niveau simple à intermédiaire, spécifiques à AURA. Pour chacune : la question (FR/AR), une réponse modèle courte en français, l'explication en arabe et la source dans le projet.</p>
+
+<h3 id="q-m1">Questions pour le Membre 1 (diapositives 1, 2, 7, 8)</h3>
+
+<div class="qa"><div class="qh fr">Q1. Décrivez le chemin d'une mesure de température, du capteur jusqu'au fichier.</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> صِف مسار قياس الحرارة من الحساس حتى الملف.</p>
+<p class="fr"><b>Réponse :</b> « Le DHT11 envoie une trame de 40 bits sur la broche PB0. Le STM32 mesure la durée de chaque bit avec le compteur DWT, vérifie la somme de contrôle, puis compare la température aux seuils MIN et MAX. La valeur est placée dans la ligne CSV avec la date de la RTC et les autres mesures, puis la ligne est ajoutée au fichier AAMMJJ_0.LOG sur la carte SD, en SPI, et le fichier est fermé. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> DHT11 ← PB0 (40 بت) ← قياس المدد بـDWT والتحقق من checksum ← مقارنة بالحدود ← السطر مع التاريخ ← كتابة في ملف اليوم عبر SPI ← إغلاق الملف.</p>
+<p class="src fr">Source : <code>dht11.c</code>, <code>acquerir()</code>, <code>construire_ligne()</code>, <code>enregistrer()</code> dans <code>station.c</code>.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q2. Pourquoi écrivez-vous « NA » au lieu de laisser le champ vide ou de garder l'ancienne valeur ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> لماذا تكتبون NA بدل ترك الحقل فارغًا أو الاحتفاظ بالقيمة السابقة؟</p>
+<p class="fr"><b>Réponse :</b> « Le document des modes demande NA quand un capteur ne répond pas dans le TIMEOUT. Cela garde toujours 7 champs par ligne, donc le fichier reste lisible dans un tableur, et on ne fait jamais croire qu'une ancienne valeur est une mesure actuelle. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> الوثيقة تطلب NA. هكذا يبقى عدد الحقول ثابتًا، ولا نوهم بأن قيمة قديمة هي قياس جديد (الكود يكتب NA ولا يعيد استعمال الموقع القديم).</p>
+<p class="src fr">Source : document « Modes de fonctionnement » ; <code>station.c</code> (commentaire « sinon NA : jamais l'ancienne position »).</p></div></div>
+
+<div class="qa"><div class="qh fr">Q3. Que se passe-t-il quand le fichier atteint FILE_MAX_SIZE ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> ماذا يحدث عندما يبلغ الملف الحجم FILE_MAX_SIZE؟</p>
+<p class="fr"><b>Réponse :</b> « Avant d'écrire, on vérifie si la ligne ferait dépasser la taille maximale, 2 Ko par défaut. Si oui, le fichier _0 est copié dans la première révision libre, de _1 à _9, puis il est vidé, et on recommence à écrire dans _0 avec un nouvel en-tête. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> يُنسخ الملف 0 إلى أول نسخة شاغرة ثم يُفرَّغ، والكتابة تستمر دائمًا في النسخة 0، كما تنص وثيقة الأوضاع.</p>
+<p class="src fr">Source : <code>archiver()</code>, <code>enregistrer()</code>. <b>Limite :</b> au-delà de 9 archives le même jour, l'archivage échoue et l'erreur SD est signalée.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q4. Pourquoi la latitude et la longitude sont-elles NA dans votre capture ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> لماذا خطّا العرض والطول NA في الصورة؟</p>
+<p class="fr"><b>Réponse :</b> « Pendant cet essai, aucune position GPS valide n'était disponible : en intérieur, le module envoie des trames sans position, avec le statut V. Le programme exige le statut A ; sinon il écrit NA. Les autres capteurs ont bien fonctionné. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> داخل المبنى لا يرى GPS الأقمار، فتكون الحالة V (غير صالحة)، والبرنامج يشترط A، لذلك NA.</p>
+<p class="src fr">Source : capture du fichier 261021_0 ; test du statut « A » dans <code>acquerir()</code>. <b>Limite :</b> la cause exacte (intérieur ou GPS désactivé) n'est pas notée dans un rapport ; « aucune position disponible » est la formulation sûre.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q5. Pourquoi mesurer le DHT11 avec le compteur DWT ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> لماذا تستعملون العدّاد DWT مع DHT11؟</p>
+<p class="fr"><b>Réponse :</b> « Le DHT11 code un 0 ou un 1 par la durée d'une impulsion, en microsecondes. Compter des tours de boucle donnait des durées fausses, surtout en mode Debug, et tous les bits étaient lus à 0. Le compteur de cycles DWT du Cortex-M4 donne un temps exact : à 80 MHz, 80 cycles font une microseconde. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> DHT11 يميّز 0 و1 بمدة النبضة. العدّ بالحلقات كان خاطئًا في وضع Debug. عدّاد DWT يعدّ دورات المعالج بدقة.</p>
+<p class="src fr">Source : commentaire de <code>dht11.c</code>.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q6. Pourquoi fermer le fichier après chaque ligne ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> لماذا تغلقون الملف بعد كل سطر؟</p>
+<p class="fr"><b>Réponse :</b> « Avec FatFS, les données peuvent rester en mémoire tampon tant que le fichier est ouvert. La fermeture les écrit réellement sur la carte. Si la carte est retirée ou l'alimentation coupée, on ne perd au plus que la ligne en cours. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> الإغلاق يفرغ الذاكرة المؤقتة ويكتب البيانات فعلًا، فلا نخسر إلا السطر الجاري في أسوأ الحالات.</p>
+<p class="src fr">Source : commentaire « fermer = tout est réellement écrit » dans <code>enregistrer()</code>. La partie « on ne perd que la ligne en cours » est une explication générale [déduit].</p></div></div>
+
+<h3 id="q-m2">Questions pour le Membre 2 (diapositives 3, 9, 10, 11)</h3>
+
+<div class="qa"><div class="qh fr">Q1. Comment la station sait-elle qu'un bouton a été appuyé pendant 5 secondes ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> كيف تعرف المحطة أن الزر ضُغط 5 ثوانٍ؟</p>
+<p class="fr"><b>Réponse :</b> « L'interruption EXTI du bouton mémorise l'instant de l'appui. Ensuite, le SysTick, chaque milliseconde, regarde si le bouton est toujours enfoncé depuis 5 secondes. Si oui, il dépose un événement dans une file, et la boucle principale change de mode. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> EXTI تحفظ لحظة الضغط، وSysTick يفحص كل ميلي ثانية، ثم يضع حدثًا في الطابور، والحلقة الرئيسية تغيّر الوضع.</p>
+<p class="src fr">Source : <code>bouton_front()</code>, <code>bouton_tick()</code>, <code>gerer_evenements()</code>.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q2. Pourquoi ne pas changer de mode directement dans l'interruption ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> لماذا لا تغيّرون الوضع مباشرة داخل المقاطعة؟</p>
+<p class="fr"><b>Réponse :</b> « Changer de mode peut demander des opérations longues, comme démonter la carte SD. Une interruption doit rester courte pour ne pas bloquer les autres. Donc l'interruption détecte, et la boucle principale décide. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> المقاطعة يجب أن تكون قصيرة؛ العمليات الطويلة (مثل فصل البطاقة) تتم في الحلقة الرئيسية.</p>
+<p class="src fr">Source : commentaire « Aucun changement de mode dans les interruptions » dans <code>station.c</code>.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q3. Comment retirer la carte SD sans corrompre les données ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> كيف نُخرج بطاقة SD دون إفساد البيانات؟</p>
+<p class="fr"><b>Réponse :</b> « On passe en mode maintenance avec un appui de 5 secondes sur le rouge : le programme démonte la carte et n'écrit plus rien. On peut alors la retirer et la remettre. Au retour dans le mode précédent, la carte est remontée automatiquement à l'écriture suivante. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> وضع الصيانة يفصل البطاقة برمجيًا ويوقف الكتابة، ثم تُركّب تلقائيًا عند الكتابة التالية.</p>
+<p class="src fr">Source : <code>changer_mode()</code>, <code>sd_demonter()</code> ; document des modes.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q4. Si deux erreurs arrivent en même temps, que montre la LED ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> إذا حدث خطآن معًا، ماذا تعرض الـLED؟</p>
+<p class="fr"><b>Réponse :</b> « Une seule : la plus prioritaire. L'ordre est : accès SD, SD pleine, RTC, capteur, GPS, donnée incohérente. Quand elle disparaît, la LED montre la suivante. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> تُعرض الأعلى أولوية فقط، وعند زوالها تظهر التالية.</p>
+<p class="src fr">Source : enum <code>Erreur</code> (« ordre = priorité d'affichage ») et <code>led_tick()</code>.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q5. Pourquoi faut-il deux échecs avant de signaler une erreur capteur ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> لماذا يلزم فشلان قبل إعلان خطأ الحساس؟</p>
+<p class="fr"><b>Réponse :</b> « C'est la règle du document de fonctionnement : après deux mesures en timeout, le capteur est signalé en erreur. Cela évite une fausse alerte à cause d'une seule lecture ratée. Un compteur par capteur est remis à zéro dès qu'une lecture réussit. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> قاعدة الوثيقة، وتجنّب الإنذار الكاذب؛ يوجد عدّاد لكل حساس يُصفَّر عند النجاح.</p>
+<p class="src fr">Source : document des modes (paramètre TIMEOUT) ; <code>nb_timeout_dht</code>, <code>nb_timeout_lux</code>, <code>nb_timeout_gps</code>.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q6. Que fait le mode économique, concrètement ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> ماذا يفعل الوضع الاقتصادي فعليًا؟</p>
+<p class="fr"><b>Réponse :</b> « Il double l'intervalle entre deux mesures et ne lit le GPS qu'une mesure sur deux, comme le demande le document. En revanche, le processeur ne passe pas en veille : on réduit le nombre d'acquisitions, mais nous n'avons pas mesuré la consommation. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> مضاعفة المدة وقراءة GPS مرة كل قياسين؛ لكن المعالج لا يدخل السكون، ولم نقس الاستهلاك.</p>
+<p class="src fr">Source : <code>Station_Loop()</code> (intervalle × 2, <code>compteur_gps</code>). <b>Limite :</b> aucune mesure de consommation documentée.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q7. Depuis le mode économique, peut-on aller en maintenance ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> هل يمكن الانتقال من الوضع الاقتصادي إلى الصيانة؟</p>
+<p class="fr"><b>Réponse :</b> « Le document indique deux effets pour le même geste depuis l'économique : retour en standard et accès à la maintenance. Nous avons retenu le retour en standard ; on passe ensuite en maintenance depuis le standard. Une constante dans le code permet de faire l'autre choix. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> نفس الحركة لها نتيجتان في الوثيقة، فاخترنا العودة إلى العادي، والثابت ECO_ROUGE_VERS_MAINTENANCE يسمح بالخيار الآخر.</p>
+<p class="src fr">Source : <code>ECO_ROUGE_VERS_MAINTENANCE</code> dans <code>station.c</code>.</p></div></div>
+
+<h3 id="q-m3">Questions pour le Membre 3 (diapositives 4, 5, 6, 16)</h3>
+
+<div class="qa"><div class="qh fr">Q1. Quelle est la différence entre UART et I²C ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> ما الفرق بين UART وI²C؟</p>
+<p class="fr"><b>Réponse :</b> « L'UART est asynchrone : il n'y a pas d'horloge commune, les deux côtés utilisent le même baud rate, et elle relie seulement deux appareils. L'I²C est synchrone : le maître fournit l'horloge sur SCL, les données passent sur SDA, et plusieurs esclaves peuvent partager le bus grâce à leur adresse. Chez nous, l'UART sert au GPS et au PC, l'I²C au BH1750. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> UART بدون ساعة ولجهازين فقط؛ I²C بساعة من السيّد ولعدة أجهزة بعناوين.</p>
+<p class="src fr">Source : cheat sheet ; Aura.ioc ; <code>main.c</code>.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q2. Pourquoi utilisez-vous deux bus I²C ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> لماذا تستعملون ناقلَي I²C؟</p>
+<p class="fr"><b>Réponse :</b> « En réalité, nous n'en utilisons qu'un seul, I2C1, sur PB8 et PB9, pour le capteur de luminosité BH1750 à l'adresse 0x23. Un seul bus suffit, puisqu'un bus I²C peut accueillir plusieurs capteurs grâce aux adresses. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> نصحّح بهدوء: ناقل واحد فقط I2C1، وهو يكفي لأنه يقبل عدة أجهزة.</p>
+<p class="src fr">Source : Aura.ioc (seul I2C1 est activé).</p></div></div>
+
+<div class="qa"><div class="qh fr">Q3. À quoi correspondent les 80 (MHz) ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> إلامَ تشير القيمة 80 (ميغاهرتز)؟</p>
+<p class="fr"><b>Réponse :</b> « C'est la fréquence d'horloge du processeur : 80 mégahertz, pas 80 hertz. Elle est obtenue à partir de l'oscillateur interne de 16 MHz, multiplié par la PLL. C'est la fréquence maximale du STM32L476. Ce n'est pas une fréquence de mesure : les mesures se font toutes les LOG_INTERVAL, soit 10 minutes par défaut. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> 80 ميغاهرتز سرعة المعالج وليست سرعة القياس؛ القياس كل 10 دقائق.</p>
+<p class="src fr">Source : <code>RCC.SYSCLKFreq_VALUE=80000000</code> dans Aura.ioc ; <code>SystemClock_Config()</code>.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q4. Pourquoi la carte SD est-elle en SPI et pas en I²C ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> لماذا بطاقة SD على SPI وليس I²C؟</p>
+<p class="fr"><b>Réponse :</b> « Le module carte SD de notre kit fonctionne en SPI, d'après la cheat sheet. Le SPI est aussi plus rapide : chez nous, environ 312 kHz pendant l'initialisation de la carte, puis 10 MHz pour les transferts, contre 100 kHz pour notre bus I²C. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> الوحدة تعمل بـSPI حسب الـcheat sheet، وهو أسرع (10 ميغاهرتز مقابل 100 كيلوهرتز).</p>
+<p class="src fr">Source : cheat sheet ; <code>user_diskio.c</code> (prescalers 256 puis 8).</p></div></div>
+
+<div class="qa"><div class="qh fr">Q5. Où sont sauvegardés les paramètres, et pourquoi ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> أين تُحفظ الإعدادات ولماذا؟</p>
+<p class="fr"><b>Réponse :</b> « Dans la dernière page de la mémoire Flash, parce que le STM32L476 n'a pas d'EEPROM. On ajoute un mot magique et une somme de contrôle : si les données sont invalides, le programme reprend les valeurs par défaut. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> في آخر صفحة من Flash لعدم وجود EEPROM، مع رمز تحقق؛ إذا كانت البيانات غير صالحة تُستعمل القيم الافتراضية.</p>
+<p class="src fr">Source : <code>param_charger()</code>, <code>param_sauver()</code>, adresse 0x080FF800.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q6. Quel est le rôle du ST-LINK ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> ما دور ST-LINK؟</p>
+<p class="fr"><b>Réponse :</b> « C'est la sonde intégrée à la carte Nucleo. Par le même câble USB, elle permet de programmer le microcontrôleur en SWD, de le déboguer, et elle fournit un port série virtuel : c'est notre console à 115 200 bauds sur l'USART2. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> مبرمج ومصحّح مدمج، ويوفّر منفذًا تسلسليًا افتراضيًا عبر نفس الكابل.</p>
+<p class="src fr">Source : cheat sheet (« ST-LINK/V2-1 ») ; script de téléversement.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q7. Quelles sont les limites de votre station ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> ما حدود محطتكم؟</p>
+<p class="fr"><b>Réponse :</b> « C'est un prototype de laboratoire alimenté en USB. La RTC tourne sur l'oscillateur interne, donc elle dérive et doit être recalée par le GPS. Le processeur ne passe pas en veille. Il n'y a pas de chien de garde, et les erreurs ne sont pas enregistrées sur la carte. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> نموذج مختبري، الساعة تنحرف، لا سكون للمعالج، لا watchdog، لا تسجيل للأخطاء.</p>
+<p class="src fr">Source : code (<code>SystemClock_Config</code>, absence de watchdog, <code>Error_Handler</code>).</p></div></div>
+
+<h3 id="q-m4">Questions pour le Membre 4 (diapositives 12, 13, 14, 15)</h3>
+
+<div class="qa"><div class="qh fr">Q1. Que se passe-t-il si la compilation échoue ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> ماذا يحدث إذا فشلت الترجمة؟</p>
+<p class="fr"><b>Réponse :</b> « Le <code>if</code> teste le code de retour de CMake. En cas d'échec, on passe dans le <code>else</code> : message d'erreur et sortie avec le code 1. La commande de téléversement n'est jamais exécutée, donc la carte garde l'ancien programme. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> عند الفشل لا يُنفَّذ الرفع أبدًا، وتبقى البطاقة على البرنامج القديم.</p>
+<p class="src fr">Source : <code>scripts/compiler_televerser_court.sh</code>.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q2. Quelle est la différence entre compiler et téléverser ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> ما الفرق بين الترجمة والرفع؟</p>
+<p class="fr"><b>Réponse :</b> « Compiler transforme le code C en fichier exécutable pour le processeur ARM, Aura.elf, sur l'ordinateur. Téléverser, ou flasher, écrit ce fichier dans la mémoire Flash du STM32 via le ST-LINK. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> الترجمة على الحاسوب تنتج Aura.elf، والرفع يكتبه في ذاكرة البطاقة.</p>
+<p class="src fr">Source : script ; CMakePresets.json.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q3. Comment avez-vous testé la station ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> كيف اختبرتم المحطة؟</p>
+<p class="fr"><b>Réponse :</b> « En quatre niveaux : chaque composant seul avec le moniteur série ; un diagnostic au démarrage avec B1 maintenu ; le système complet avec un intervalle de 20 secondes ; et la relecture des fichiers sur PC. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> اختبار كل مكوّن، ثم التشخيص المدمج، ثم النظام كاملًا بفاصل 20 ثانية، ثم قراءة الملفات.</p>
+<p class="src fr">Source : diapositive 13 ; <code>Test_Materiel()</code>. <b>Limite :</b> pas de rapport chiffré (durée, nombre de lignes) dans le projet.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q4. Pourquoi utiliser LOG_INTERVAL=20S pendant les tests ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> لماذا LOG_INTERVAL=20S أثناء الاختبارات؟</p>
+<p class="fr"><b>Réponse :</b> « Avec 10 minutes par défaut, il faudrait attendre très longtemps pour voir plusieurs mesures. Et une erreur capteur n'apparaît qu'après deux acquisitions ratées. Avec 20 secondes, on voit l'enregistrement, l'erreur et la reprise en quelques minutes. Le S indique des secondes ; c'est un ajout de notre programme. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> لتسريع الدورات ورؤية الأخطاء التي تحتاج قياسين؛ حرف S للثواني إضافة منا.</p>
+<p class="src fr">Source : <code>config_commande()</code> (LOG_INTERVAL en secondes, 5 à 86 400 s).</p></div></div>
+
+<div class="qa"><div class="qh fr">Q5. Que signifie « 7 % de la Flash » ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> ماذا يعني «7٪ من Flash»؟</p>
+<p class="fr"><b>Réponse :</b> « Le programme compilé occupe environ 72 Ko sur 1 Mo de mémoire Flash, en build Debug. La RAM utilisée est d'environ 4,8 Ko. Il reste donc beaucoup de place pour ajouter des fonctions. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> البرنامج يشغل نحو 72 كيلوبايت من 1 ميغابايت؛ مساحة كبيرة متبقية.</p>
+<p class="src fr">Source : sortie de l'éditeur de liens (build du 23/10/2026).</p></div></div>
+
+<div class="qa"><div class="qh fr">Q6. Que fait la commande RESET ? Et PARAMS ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> ماذا يفعل الأمر RESET؟ وPARAMS؟</p>
+<p class="fr"><b>Réponse :</b> « RESET remet tous les paramètres à leurs valeurs par défaut et les sauvegarde en Flash. PARAMS affiche les valeurs actuelles sur la console. Ces commandes s'utilisent en mode configuration. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> RESET يعيد القيم الافتراضية، PARAMS يعرض القيم الحالية.</p>
+<p class="src fr">Source : <code>config_commande()</code>.</p></div></div>
+
+<div class="qa"><div class="qh fr">Q7. Pourquoi FILE_MAX_SIZE vaut-il 2 Ko ?</div><div class="qb">
+<p class="ar" lang="ar"><b>السؤال:</b> لماذا FILE_MAX_SIZE يساوي 2 كيلوبايت؟</p>
+<p class="fr"><b>Réponse :</b> « C'est la valeur par défaut indiquée dans le document des modes de fonctionnement. Elle est réglable de 256 octets à 4 Mo avec la commande FILE_MAX_SIZE. Avec une mesure toutes les 10 minutes, une journée fait environ 7 Ko, donc 3 à 4 archives par jour. »</p>
+<p class="ar" lang="ar"><b>الشرح:</b> القيمة الافتراضية في الوثيقة؛ قابلة للضبط؛ تقريبًا 3 إلى 4 أرشيفات يوميًا.</p>
+<p class="src fr">Source : document des modes ; <code>PARAM_DEFAUT</code> et tableau <code>PARAMS</code>. Le calcul « 7 Ko par jour » est une estimation (144 lignes de ~50 octets).</p></div></div>
+
+<div class="part">PARTIE 4</div>
+<h2 id="difficile" class="nobreak">Répondre quand on ne connaît pas exactement la réponse</h2>
+<div class="card fr"><p><b>Règle :</b> on ne ment pas, on n'invente pas, on ne prétend pas avoir vérifié ce qu'on n'a pas vérifié. On dit <b>ce qu'on sait sûrement</b>, on explique <b>le principe</b>, et on <b>sépare</b> clairement le certain de l'hypothèse.</p></div>
+<div class="card ar" lang="ar"><p><b>القاعدة:</b> لا نكذب ولا نخترع ولا ندّعي التحقق مما لم نتحقق منه. نقول <b>ما نعرفه يقينًا</b>، ونشرح <b>المبدأ</b>، ونفصل بوضوح بين المؤكَّد والافتراض.</p></div>
+
+<table>
+<tr><th style="width:18%">Situation</th><th class="fr">Phrase prête à utiliser + exemple AURA</th><th class="ar" lang="ar">الترجمة</th></tr>
+<tr><td>Principe connu, valeur oubliée</td><td class="fr">« Je peux expliquer le principe : la valeur exacte est un paramètre de notre configuration. » <i>Ex. : « Le TIMEOUT est le temps maximal d'attente d'un capteur ; après, on écrit NA. La valeur par défaut figure dans notre tableau des paramètres, diapositive 15. »</i></td><td class="ar" lang="ar">«أستطيع شرح المبدأ، أما القيمة الدقيقة فهي إعداد في تهيئتنا.» مثال: المهلة TIMEOUT هي أقصى وقت لانتظار الحساس ثم نكتب NA، والقيمة موجودة في جدول الإعدادات.</td></tr>
+<tr><td>Rôle connu, détail de configuration incertain</td><td class="fr">« Le rôle de ce composant est clair : … ; pour le détail de configuration, je préfère vérifier dans notre fichier CubeMX plutôt que de donner un chiffre approximatif. » <i>Ex. : vitesse exacte du bus SPI.</i></td><td class="ar" lang="ar">«دور هذا المكوّن واضح…، أما تفصيل الإعداد فأفضّل التحقق منه في ملف CubeMX بدل إعطاء رقم تقريبي.»</td></tr>
+<tr><td>Question comprise en partie</td><td class="fr">« Si je comprends bien, votre question concerne… Je vais répondre en deux temps : d'abord…, ensuite… » <i>Ex. : « Votre question concerne la fiabilité de l'écriture : d'abord la vérification de place, ensuite la fermeture du fichier. »</i></td><td class="ar" lang="ar">«إن فهمت جيدًا، سؤالكم يتعلق بـ… سأجيب على مرحلتين: أولًا…، ثم…»</td></tr>
+<tr><td>Relier à un mécanisme maîtrisé</td><td class="fr">« Le principe général est que…, et dans notre projet cela intervient au niveau de… » <i>Ex. : « En général, une interruption doit être courte ; chez nous, c'est pour cela que le changement de mode se fait dans la boucle principale. »</i></td><td class="ar" lang="ar">«المبدأ العام هو…، وفي مشروعنا يظهر ذلك في…» مثال: المقاطعة يجب أن تكون قصيرة، لذلك يتم تغيير الوضع في الحلقة الرئيسية.</td></tr>
+<tr><td>Vérifier une hypothèse avant d'affirmer</td><td class="fr">« Ce que nous pouvons confirmer à partir de notre implémentation, c'est que… ; pour le reste, il faudrait le vérifier par un test. » <i>Ex. : « Nous pouvons confirmer que la station réessaie le montage SD à chaque écriture ; la durée exacte de reprise, nous ne l'avons pas mesurée. »</i></td><td class="ar" lang="ar">«ما يمكننا تأكيده من تنفيذنا هو…؛ أما الباقي فيحتاج إلى اختبار للتحقق منه.»</td></tr>
+<tr><td>Information insuffisante</td><td class="fr">« Je n'ai pas cette information de façon certaine, et je préfère ne pas l'inventer. Ce que je peux vous dire, c'est… » <i>Ex. : consommation électrique : « Nous ne l'avons pas mesurée. Ce que nous savons, c'est que le mode économique réduit le nombre de mesures, mais que le processeur ne se met pas en veille. »</i></td><td class="ar" lang="ar">«لا أملك هذه المعلومة بشكل مؤكد، وأفضّل ألا أخترعها. ما أستطيع قوله هو…» مثال: الاستهلاك لم نقسه.</td></tr>
+<tr><td>Distinguer deux notions</td><td class="fr">« Pour préciser ce point, il faut distinguer… » <i>Ex. : « Il faut distinguer la fréquence du processeur, 80 MHz, et l'intervalle de mesure, 10 minutes. »</i></td><td class="ar" lang="ar">«لتوضيح هذه النقطة يجب التمييز بين…» مثال: تردد المعالج 80 ميغاهرتز وفاصل القياس 10 دقائق.</td></tr>
+<tr><td>Passer la main</td><td class="fr">« C'est la partie de [Membre X], je lui laisse compléter. » (à utiliser une seule fois, pas pour éviter toutes les questions)</td><td class="ar" lang="ar">«هذا جزء [العضو X]، أتركه يُكمل.» (مرة واحدة فقط، وليس للتهرّب)</td></tr>
+</table>
+
+<h3>Quand l'enseignant signale une erreur</h3>
+<div class="grid2">
+<div class="card fr"><ol><li><b>Écouter</b> jusqu'au bout, sans interrompre.</li><li><b>Reconnaître</b> : « Vous avez raison, merci. »</li><li><b>Corriger</b> calmement : « La valeur exacte est… / Je voulais dire… »</li><li><b>Reprendre</b> l'explication là où elle en était.</li></ol><p><i>Ex. : « Vous avez raison, ce n'est pas 80 hertz mais 80 mégahertz : c'est la fréquence du processeur. Donc, comme je le disais, les mesures sont faites toutes les dix minutes… »</i></p></div>
+<div class="card ar" lang="ar"><ol><li><b>الاستماع</b> حتى النهاية دون مقاطعة.</li><li><b>الاعتراف</b>: «معكم حق، شكرًا.»</li><li><b>التصحيح</b> بهدوء: «القيمة الصحيحة هي…»</li><li><b>متابعة</b> الشرح من حيث توقف.</li></ol></div>
+</div>
+
+<div class="part">PARTIE 5</div>
+<h2 id="commun" class="nobreak">Fiche commune de révision (pour les quatre membres)</h2>
+<table class="fr">
+<tr><th style="width:24%">Thème</th><th>À savoir par cœur</th></tr>
+<tr><td>Architecture</td><td>NUCLEO-L476RG au centre ; capteurs DHT11, BH1750, GPS ; stockage SD ; RTC interne ; LED RGB ; 2 boutons ; console PC via ST-LINK.</td></tr>
+<tr><td>STM32</td><td>STM32L476RG, Cortex-M4, <b>80 MHz</b>, 1 Mo Flash, 128 Ko RAM ; carte imposée ; pas d'EEPROM → paramètres en Flash.</td></tr>
+<tr><td>Connexions</td><td>DHT11 PB0 (1 fil) · BH1750 PB8/PB9, 0x23 (I2C1, 100 kHz) · GPS PC10/PC11 (USART3, 9600) · SD PA5/PA6/PA7, CS PB6 (SPI1) · LED PA0/PA1/PA4 · boutons PC3 (rouge), PC13 (vert/B1) · console PA2/PA3 (USART2, 115 200).</td></tr>
+<tr><td>Données</td><td>RTC → DHT11 → BH1750 → GPS → ligne de 7 champs « ; » → console + SD (standard/éco) ; NA si absent.</td></tr>
+<tr><td>Interfaces</td><td>1 fil, I²C (synchrone, adresses), UART (asynchrone, baud rate), SPI (synchrone, rapide, CS) ; <b>un seul bus I²C</b>.</td></tr>
+<tr><td>Paramètres</td><td>LOG_INTERVAL 10 min (20S en test) · FILE_MAX_SIZE 2 Ko · TIMEOUT 30 s · LUMIN_LOW/HIGH 255/768 · MIN/MAX_TEMP_AIR −10/60 °C · HYGR_MINT/MAXT 0/50 °C.</td></tr>
+<tr><td>Modes</td><td>Standard vert · Configuration jaune (rouge au démarrage, 30 min) · Maintenance orange (rouge 5 s) · Économique bleu (vert 5 s, intervalle × 2, GPS 1/2).</td></tr>
+<tr><td>Erreurs</td><td>6 erreurs, priorité SD → SD pleine → RTC → capteur → GPS → incohérente ; 1 Hz rouge + 2e couleur ; 2 échecs ; reprise automatique.</td></tr>
+<tr><td>SD</td><td>FAT32/FatFS ; <code>AAMMJJ_0.LOG</code> ; archives _1…_9 ; en-tête ; fermeture à chaque ligne ; maintenance = retrait sûr.</td></tr>
+<tr><td>Tests</td><td>Composant seul → diagnostic B1 → intégration 20 s → lecture fichiers ; compilation OK 23/10/2026 ; ≈ 72 Ko Flash, ≈ 4,8 Ko RAM.</td></tr>
+<tr><td>Choix justifiés</td><td>STM32 imposé ; interfaces imposées par les composants (cheat sheet) ; DWT pour la précision du DHT11 ; NA et 2 échecs selon le document des modes ; fermeture du fichier pour la sûreté des données ; interruptions courtes, décisions dans la boucle.</td></tr>
+</table>
+<div class="card ar" lang="ar"><p><b>ملخص بالعربية:</b> المتحكم STM32L476RG بتردد 80 ميغاهرتز في المركز. ثلاثة حساسات (DHT11 للحرارة والرطوبة، BH1750 للإضاءة، GPS للموقع والوقت)، بطاقة SD للتخزين، ساعة RTC داخلية، LED ملوّنة، زرّان، وحاسوب عبر ST-LINK. القياس: الساعة ← DHT11 ← BH1750 ← GPS ← سطر من 7 حقول ← وحدة التحكم والبطاقة. الإعدادات: 10 دقائق، 2 كيلوبايت، 30 ثانية. الأوضاع: أخضر/أصفر/برتقالي/أزرق. ستة أخطاء بأولوية وتعافٍ تلقائي. ناقل I²C واحد فقط.</p></div>
+
+<h3>Questions que tout membre du groupe doit savoir traiter</h3>
+<div class="qa"><div class="qh fr">1. En une phrase, que fait votre station ?</div><div class="qb"><p class="fr">« Elle mesure régulièrement la température, l'humidité, la luminosité et la position, date chaque mesure et l'enregistre sur une carte SD, avec quatre modes pilotés par deux boutons et une LED d'état. »</p><p class="ar" lang="ar">تقيس بانتظام الحرارة والرطوبة والإضاءة والموقع، وتؤرّخ كل قياس وتسجّله على بطاقة SD، مع أربعة أوضاع بزرّين وLED للحالة.</p></div></div>
+<div class="qa"><div class="qh fr">2. Combien de capteurs et quelles liaisons ?</div><div class="qb"><p class="fr">« Trois : DHT11 en 1 fil, BH1750 en I²C, GPS en UART. La carte SD est en SPI. »</p><p class="ar" lang="ar">ثلاثة: DHT11 بسلك واحد، BH1750 بـI²C، GPS بـUART؛ والبطاقة بـSPI.</p></div></div>
+<div class="qa"><div class="qh fr">3. Que veut dire NA dans le fichier ?</div><div class="qb"><p class="fr">« Valeur non disponible : capteur muet après le TIMEOUT, capteur désactivé, valeur hors seuils, ou pas de position GPS valide. »</p><p class="ar" lang="ar">قيمة غير متوفرة: حساس لم يرد، أو معطَّل، أو قيمة خارج الحدود، أو لا يوجد موقع صالح.</p></div></div>
+<div class="qa"><div class="qh fr">4. Comment passe-t-on en mode configuration ?</div><div class="qb"><p class="fr">« En démarrant la carte avec le bouton rouge maintenu. LED jaune ; on tape les commandes sur la console à 115 200 bauds. »</p><p class="ar" lang="ar">بتشغيل البطاقة مع إبقاء الزر الأحمر مضغوطًا؛ LED صفراء؛ نكتب الأوامر على وحدة التحكم.</p></div></div>
+<div class="qa"><div class="qh fr">5. Que se passe-t-il si on débranche le DHT11 ?</div><div class="qb"><p class="fr">« Température et humidité passent à NA. Après deux acquisitions en échec, l'erreur capteur s'affiche : LED rouge et verte. Dès qu'on le rebranche et qu'une lecture réussit, l'erreur disparaît. »</p><p class="ar" lang="ar">تصبح الحرارة والرطوبة NA، وبعد فشلين يظهر خطأ الحساس (أحمر وأخضر)، ويختفي عند إعادة التوصيل ونجاح القراءة.</p></div></div>
+<div class="qa"><div class="qh fr">6. À quoi sert la RTC si vous avez un GPS ?</div><div class="qb"><p class="fr">« Le GPS n'a pas toujours de signal, par exemple en intérieur. La RTC donne l'heure en permanence ; le GPS sert à la remettre à l'heure quand il est disponible. »</p><p class="ar" lang="ar">GPS لا يملك إشارة دائمًا؛ الساعة RTC تعطي الوقت دائمًا، وGPS يصحّحها عند توفره.</p></div></div>
+<div class="qa"><div class="qh fr">7. Votre système utilise-t-il un OS temps réel ou du DMA ?</div><div class="qb"><p class="fr">« Non. C'est une boucle principale avec des interruptions (SysTick, EXTI, UART), sans système d'exploitation et sans DMA. »</p><p class="ar" lang="ar">لا. حلقة رئيسية مع مقاطعات، دون نظام تشغيل ودون DMA.</p></div></div>
+<div class="qa"><div class="qh fr">8. Qu'amélioreriez-vous en priorité ?</div><div class="qb"><p class="fr">« Ce sont des pistes, pas des réalisations : utiliser les modes basse consommation du STM32 en mode économique, ajouter un chien de garde, et journaliser les erreurs sur la carte. »</p><p class="ar" lang="ar">مقترحات وليست منجزات: أوضاع الاستهلاك المنخفض، مؤقت حراسة، وتسجيل الأخطاء على البطاقة.</p></div></div>
+
+<div class="part">PARTIE 6</div>
+<h2 id="simulation" class="nobreak">Simulation de soutenance</h2>
+<p class="fr">Lisez-la à voix haute à quatre : une personne joue l'enseignant, les autres répondent sans regarder leurs notes. Les lignes en arabe résument l'idée de chaque réponse.</p>
+<div class="card sim">
+<p class="t">Enseignant : Quel est le rôle exact du STM32 dans votre système ?</p>
+<p class="r fr"><b>Membre 3 :</b> « C'est le seul élément qui calcule. Il interroge les capteurs, reçoit le GPS, date les mesures avec sa RTC, écrit sur la carte SD, pilote la LED et lit les boutons. Il garde aussi les paramètres dans sa Flash. »</p>
+<p class="r ar" lang="ar">STM32 هو العنصر الوحيد الذي يحسب ويتحكم في كل شيء.</p>
+<p class="t">Enseignant (suivi) : Et pourquoi la Flash et pas une EEPROM ?</p>
+<p class="r fr"><b>Membre 3 :</b> « Le STM32L476 n'a pas d'EEPROM. On utilise donc la dernière page de la Flash, avec un mot magique et une somme de contrôle pour vérifier que les données sont valides. »</p>
+<p class="r ar" lang="ar">لا توجد EEPROM فنستعمل آخر صفحة من Flash مع رمز تحقق.</p>
+
+<p class="t">Enseignant : Vous parlez de 80 hertz, c'est la fréquence de vos mesures ?</p>
+<p class="r fr"><b>Membre 3 :</b> « Il faut distinguer : 80 mégahertz, c'est l'horloge du processeur. Les mesures, elles, sont faites toutes les LOG_INTERVAL, dix minutes par défaut. »</p>
+<p class="r ar" lang="ar">80 ميغاهرتز للمعالج، والقياس كل 10 دقائق.</p>
+
+<p class="t">Enseignant : Expliquez-moi ce qui se passe entre le capteur de lumière et le fichier.</p>
+<p class="r fr"><b>Membre 1 :</b> « Le STM32 lit le BH1750 sur le bus I²C, à l'adresse 0x23 ; la valeur brute divisée par 1,2 donne des lux. Elle devient le septième champ de la ligne, puis la ligne est ajoutée au fichier du jour sur la carte SD, et le fichier est fermé. »</p>
+<p class="r ar" lang="ar">قراءة عبر I²C ← قسمة على 1.2 ← الحقل السابع ← إضافة إلى ملف اليوم ← إغلاق.</p>
+<p class="t">Enseignant (suivi) : Et si le capteur ne répond pas ?</p>
+<p class="r fr"><b>Membre 1 :</b> « On réessaie toutes les demi-secondes jusqu'au TIMEOUT, trente secondes par défaut. Ensuite on écrit NA. Après deux acquisitions en échec, l'erreur capteur est affichée par la LED. »</p>
+<p class="r ar" lang="ar">محاولات كل نصف ثانية حتى 30 ثانية، ثم NA، وبعد فشلين يظهر الخطأ.</p>
+
+<p class="t">Enseignant : Pourquoi avoir deux UART ?</p>
+<p class="r fr"><b>Membre 3 :</b> « Une UART relie seulement deux appareils. Nous en avons deux à relier : le GPS sur l'USART3 à 9600 bauds, et l'ordinateur sur l'USART2 à 115 200 bauds via le ST-LINK. »</p>
+<p class="r ar" lang="ar">UART يربط جهازين فقط، ولدينا GPS والحاسوب.</p>
+
+<p class="t">Enseignant : Pourquoi le changement de mode n'est-il pas fait dans l'interruption du bouton ?</p>
+<p class="r fr"><b>Membre 2 :</b> « Parce qu'il peut être long, par exemple démonter la carte SD. Une interruption doit rester courte. L'interruption détecte et met un événement dans une file ; la boucle principale décide. »</p>
+<p class="r ar" lang="ar">لأن التغيير قد يطول؛ المقاطعة قصيرة وتضع حدثًا، والحلقة تقرّر.</p>
+
+<p class="t">Enseignant : Si je retire la carte SD en mode standard, que se passe-t-il ?</p>
+<p class="r fr"><b>Membre 2 :</b> « À l'écriture suivante, le montage ou l'écriture échoue : la carte est considérée comme démontée et la LED clignote rouge et blanc, avec le blanc deux fois plus long. Quand on remet la carte, le programme la remonte à l'écriture suivante et l'erreur disparaît. Pour la retirer proprement, il faut passer en maintenance. »</p>
+<p class="r ar" lang="ar">خطأ وصول البطاقة (أحمر وأبيض)، ثم تعافٍ تلقائي عند إعادتها؛ الطريقة الصحيحة هي وضع الصيانة.</p>
+<p class="t">Enseignant (suivi) : Combien de temps faut-il pour que l'erreur disparaisse ?</p>
+<p class="r fr"><b>Membre 2 :</b> « Ce que je peux confirmer, c'est que la reprise se fait à l'écriture suivante, donc au plus tard après un intervalle de mesure. Nous n'avons pas mesuré la durée exacte dans un rapport de test. »</p>
+<p class="r ar" lang="ar">نؤكد أن التعافي يتم عند الكتابة التالية، لكن لم نقس المدة بدقة.</p>
+
+<p class="t">Enseignant : Que garantit votre script de compilation ?</p>
+<p class="r fr"><b>Membre 4 :</b> « Qu'on ne téléverse jamais un programme si la compilation a échoué. Le <code>if</code> teste le résultat de CMake ; en cas d'échec, message d'erreur et code 1 ; sinon, STM32_Programmer_CLI écrit Aura.elf, vérifie et redémarre la carte. »</p>
+<p class="r ar" lang="ar">لا رفع أبدًا بعد ترجمة فاشلة.</p>
+<p class="t">Enseignant (suivi) : Votre diapositive indique compiler_televerser.sh ; c'est bien ce fichier ?</p>
+<p class="r fr"><b>Membre 4 :</b> « Les cinq lignes affichées sont celles de la version courte, compiler_televerser_court.sh. Le script complet suit le même principe et ajoute un numéro de build, un mode release et l'ouverture du moniteur série. »</p>
+<p class="r ar" lang="ar">الأسطر المعروضة من النسخة القصيرة؛ النسخة الكاملة بنفس المبدأ مع إضافات.</p>
+
+<p class="t">Enseignant : Quels résultats de tests pouvez-vous me donner ?</p>
+<p class="r fr"><b>Membre 4 :</b> « Ce que nous pouvons confirmer : la compilation sans erreur le 23 octobre, un programme qui occupe environ 7 % de la Flash, le diagnostic intégré, et des fichiers réellement enregistrés, comme celui du 21 octobre montré diapositive 8. Nous n'avons pas de rapport chiffré sur la durée de fonctionnement continu ; la démonstration va montrer le comportement réel. »</p>
+<p class="r ar" lang="ar">نذكر فقط الموثّق: الترجمة، الذاكرة، التشخيص، الملف الحقيقي؛ ولا نخترع أرقامًا.</p>
+
+<p class="t">Enseignant : Utilisez-vous deux bus I²C ?</p>
+<p class="r fr"><b>Membre 1 :</b> « Non, un seul : I2C1, sur PB8 et PB9, pour le BH1750. Un bus I²C peut accueillir plusieurs capteurs grâce à leurs adresses, donc un seul suffit. »</p>
+<p class="r ar" lang="ar">ناقل واحد فقط يكفي.</p>
+
+<p class="t">Enseignant : Pourquoi votre RTC dérive-t-elle ?</p>
+<p class="r fr"><b>Membre 3 :</b> « Elle utilise l'oscillateur interne LSI, moins précis qu'un quartz. C'est pour cela que nous la recalons sur l'heure GPS au premier signal valide, puis dès que l'écart dépasse deux secondes. »</p>
+<p class="r ar" lang="ar">تعمل على مذبذب داخلي أقل دقة، لذلك نصحّحها بوقت GPS.</p>
+
+<p class="t">Enseignant : Quel est l'intérêt réel pour un bateau ?</p>
+<p class="r fr"><b>Membre 3 :</b> « La station fonctionne seule, sans ordinateur ; l'équipage voit son état d'un coup d'œil grâce à la couleur de la LED ; et les données se récupèrent sans risque, en passant en maintenance avant de retirer la carte SD. »</p>
+<p class="r ar" lang="ar">مستقلة، حالتها واضحة بالـLED، وبياناتها تُسترجع بأمان.</p>
+</div>
+
+<p class="small fr" style="margin-top:30px">Guide établi à partir des fichiers du projet Aura (code, configuration CubeMX, scripts, présentation) et des documents CESI (modes de fonctionnement, cheat sheet, sujet). Les éléments marqués [déduit] sont des explications générales non écrites dans ces documents.</p>
+</main>
+<script>
+function vue(m){
+  document.body.classList.toggle('hide-ar', m==='fr');
+  document.body.classList.toggle('hide-fr', m==='ar');
+  ['both','fr','ar'].forEach(function(k){document.getElementById('b-'+k).classList.toggle('on', k===m);});
+}
+</script>
+</body>
+</html>
